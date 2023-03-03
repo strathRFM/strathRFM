@@ -1,5 +1,5 @@
 ## LOGO
-![alt text](https://github.com/strathRFM/strathRFM/edit/main/logo.png?raw=true)
+![plot](https://github.com/strathRFM/strathRFM/edit/main/logo.png?raw=true)
 # strathRFM
 
 Description:

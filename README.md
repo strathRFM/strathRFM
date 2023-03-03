@@ -1,6 +1,5 @@
-## LOGO
 ![screenshot](logo.png?raw=true)
-# strathRFM
+# strath Radio Frequency Mapping
 
 Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.

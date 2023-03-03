@@ -12,11 +12,11 @@ z111111111111111111111111111
 bla bla bla and bla
 
 ## install
-#Linux: 
+Linux: 
 copy and panste use python command
 rfsoc:
 open jupiter notebook terminal
 pip3 install hhtps://git+strathRFM/strathRFM
 
-#windows:
+windows:
 download exe or compile source code in the GUI folder

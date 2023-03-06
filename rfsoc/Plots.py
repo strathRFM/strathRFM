@@ -86,8 +86,8 @@ def plotSpectrumDict(spectrumDict):
     plt.show()
 
 #  3d plots a range of datapoints within a single day.
-: # e.g. spectrum_data/S_01-03-23, 'hill or 'wire', stime = start time, etime = end time  
-def plotDay(filepath, mode = 'hill', stime = 0,etime = 23)
+# e.g. spectrum_data/S_01-03-23, 'hill or 'wire', stime = start time, etime = end time  
+def plotDay(filepath, mode = 'hill', stime = 0,etime = 23):
     # will plot from hr 0 to 23
     
     

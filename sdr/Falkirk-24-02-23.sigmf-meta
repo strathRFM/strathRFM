@@ -1,0 +1,789 @@
+{
+    "global": {
+        "core:author": "RTL-SDR",
+        "core:datatype": "rf64_le",
+        "core:geolocation": {
+            "coordinates": [
+                56.00944,
+                -3.77161
+            ],
+            "type": "Point"
+        },
+        "core:sha512": "14ea446680ce454855b0eaa805e561bedf9856b0879950d73a78fed5a5a3413c82e6415964b63366ef26a5415cefea4ddb183ead330a4ebb4378ee90d5b6d8e7",
+        "core:version": "1.1.0"
+    },
+    "captures": [
+        {
+            "core:datetime": "2023-02-24T20:34:58.459176Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 0
+        },
+        {
+            "core:datetime": "2023-02-24T20:49:59.590253Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 157824
+        },
+        {
+            "core:datetime": "2023-02-24T21:11:05.762137Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 315648
+        },
+        {
+            "core:datetime": "2023-02-24T21:32:05.792578Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 473472
+        },
+        {
+            "core:datetime": "2023-02-24T21:52:48.108533Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 631296
+        },
+        {
+            "core:datetime": "2023-02-24T22:13:43.159235Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 789120
+        },
+        {
+            "core:datetime": "2023-02-24T22:34:25.491879Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 946944
+        },
+        {
+            "core:datetime": "2023-02-24T22:55:12.718906Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1104768
+        },
+        {
+            "core:datetime": "2023-02-24T23:15:58.616023Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1262592
+        },
+        {
+            "core:datetime": "2023-02-24T23:36:33.773015Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1420416
+        },
+        {
+            "core:datetime": "2023-02-24T23:57:11.941186Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1578240
+        },
+        {
+            "core:datetime": "2023-02-25T00:18:00.129735Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1736064
+        },
+        {
+            "core:datetime": "2023-02-25T00:38:43.505450Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 1893888
+        },
+        {
+            "core:datetime": "2023-02-25T00:59:19.514067Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2051712
+        },
+        {
+            "core:datetime": "2023-02-25T01:19:53.173009Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2209536
+        },
+        {
+            "core:datetime": "2023-02-25T01:40:27.029691Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2367360
+        },
+        {
+            "core:datetime": "2023-02-25T02:01:02.595159Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2525184
+        },
+        {
+            "core:datetime": "2023-02-25T02:21:41.359967Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2683008
+        },
+        {
+            "core:datetime": "2023-02-25T02:41:58.171904Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2840832
+        },
+        {
+            "core:datetime": "2023-02-25T03:02:38.604531Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 2998656
+        },
+        {
+            "core:datetime": "2023-02-25T03:23:28.162800Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3156480
+        },
+        {
+            "core:datetime": "2023-02-25T03:44:07.922138Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3314304
+        },
+        {
+            "core:datetime": "2023-02-25T04:04:41.585425Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3472128
+        },
+        {
+            "core:datetime": "2023-02-25T04:25:28.403480Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3629952
+        },
+        {
+            "core:datetime": "2023-02-25T04:46:10.183814Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3787776
+        },
+        {
+            "core:datetime": "2023-02-25T05:06:46.863497Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 3945600
+        },
+        {
+            "core:datetime": "2023-02-25T05:27:16.904523Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4103424
+        },
+        {
+            "core:datetime": "2023-02-25T05:47:56.179893Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4261248
+        },
+        {
+            "core:datetime": "2023-02-25T06:08:38.906358Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4419072
+        },
+        {
+            "core:datetime": "2023-02-25T06:29:15.305299Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4576896
+        },
+        {
+            "core:datetime": "2023-02-25T06:49:49.463172Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4734720
+        },
+        {
+            "core:datetime": "2023-02-25T07:10:25.781846Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 4892544
+        },
+        {
+            "core:datetime": "2023-02-25T07:31:08.016486Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5050368
+        },
+        {
+            "core:datetime": "2023-02-25T07:51:43.014076Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5208192
+        },
+        {
+            "core:datetime": "2023-02-25T08:12:21.596198Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5366016
+        },
+        {
+            "core:datetime": "2023-02-25T08:32:55.639028Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5523840
+        },
+        {
+            "core:datetime": "2023-02-25T08:53:08.040481Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5681664
+        },
+        {
+            "core:datetime": "2023-02-25T09:13:43.820159Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5839488
+        },
+        {
+            "core:datetime": "2023-02-25T09:34:18.284701Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 5997312
+        },
+        {
+            "core:datetime": "2023-02-25T09:54:55.782177Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6155136
+        },
+        {
+            "core:datetime": "2023-02-25T10:15:31.265435Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6312960
+        },
+        {
+            "core:datetime": "2023-02-25T10:36:03.314759Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6470784
+        },
+        {
+            "core:datetime": "2023-02-25T10:56:31.305101Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6628608
+        },
+        {
+            "core:datetime": "2023-02-25T11:17:01.357266Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6786432
+        },
+        {
+            "core:datetime": "2023-02-25T11:37:44.338847Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 6944256
+        },
+        {
+            "core:datetime": "2023-02-25T11:58:07.445296Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7102080
+        },
+        {
+            "core:datetime": "2023-02-25T12:18:43.804970Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7259904
+        },
+        {
+            "core:datetime": "2023-02-25T12:39:18.281675Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7417728
+        },
+        {
+            "core:datetime": "2023-02-25T12:59:48.680474Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7575552
+        },
+        {
+            "core:datetime": "2023-02-25T13:20:15.532409Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7733376
+        },
+        {
+            "core:datetime": "2023-02-25T13:40:54.386656Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 7891200
+        },
+        {
+            "core:datetime": "2023-02-25T14:01:29.554921Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8049024
+        },
+        {
+            "core:datetime": "2023-02-25T14:22:06.702872Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8206848
+        },
+        {
+            "core:datetime": "2023-02-25T14:42:51.487151Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8364672
+        },
+        {
+            "core:datetime": "2023-02-25T15:03:03.204195Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8522496
+        },
+        {
+            "core:datetime": "2023-02-25T15:23:35.950858Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8680320
+        },
+        {
+            "core:datetime": "2023-02-25T15:44:11.628186Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8838144
+        },
+        {
+            "core:datetime": "2023-02-25T16:04:41.835954Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 8995968
+        },
+        {
+            "core:datetime": "2023-02-25T16:25:11.437699Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9153792
+        },
+        {
+            "core:datetime": "2023-02-25T16:45:43.290111Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9311616
+        },
+        {
+            "core:datetime": "2023-02-25T17:06:19.401056Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9469440
+        },
+        {
+            "core:datetime": "2023-02-25T17:26:52.237391Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9627264
+        },
+        {
+            "core:datetime": "2023-02-25T17:47:22.909810Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9785088
+        },
+        {
+            "core:datetime": "2023-02-25T18:07:45.814542Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 9942912
+        },
+        {
+            "core:datetime": "2023-02-25T18:28:17.166761Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10100736
+        },
+        {
+            "core:datetime": "2023-02-25T18:48:43.491304Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10258560
+        },
+        {
+            "core:datetime": "2023-02-25T19:10:14.365313Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10416384
+        },
+        {
+            "core:datetime": "2023-02-25T19:31:17.401156Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10574208
+        },
+        {
+            "core:datetime": "2023-02-25T19:52:48.208935Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10732032
+        },
+        {
+            "core:datetime": "2023-02-25T20:14:16.652081Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 10889856
+        }
+    ],
+    "annotations": [
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 0
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 157824
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 315648
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 473472
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 631296
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 789120
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 946944
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1104768
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1262592
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1420416
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1578240
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1736064
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 1893888
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2051712
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2209536
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2367360
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2525184
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2683008
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2840832
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 2998656
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3156480
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3314304
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3472128
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3629952
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3787776
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 3945600
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4103424
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4261248
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4419072
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4576896
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4734720
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 4892544
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5050368
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5208192
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5366016
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5523840
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5681664
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5839488
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 5997312
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6155136
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6312960
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6470784
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6628608
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6786432
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 6944256
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7102080
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7259904
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7417728
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7575552
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7733376
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 7891200
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8049024
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8206848
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8364672
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8522496
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8680320
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8838144
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 8995968
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9153792
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9311616
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9469440
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9627264
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9785088
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 9942912
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10100736
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10258560
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10416384
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10574208
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10732032
+        },
+        {
+            "core:freq_lower_edge": 24.299999990728168,
+            "core:freq_upper_edge": 1750.4890853549903,
+            "core:sample_count": 157824,
+            "core:sample_start": 10889856
+        }
+    ]
+}

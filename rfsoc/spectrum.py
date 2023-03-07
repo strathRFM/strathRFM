@@ -3,7 +3,11 @@
 # coding: utf-8
 #import sys
 #sys.path.append('/usr/local/share/pynq-venv/lib/python3.8/site-packages')
-
+"""
+Author: Robert A Incze, shullat
+Date:
+Description:
+"""
 
 # In[1]:
 import matplotlib
@@ -25,8 +29,10 @@ import datetime as dt
 class spectrum:
     def __init__(self,_fft_size = 4096, 
                       _decimation_factor = 2, 
-                      _sub_division = 1,
-                      _centre_frequency = 1024):
+                      _sub_div = False,
+                      _centre_frequency = 1024,
+                      _coordinates = (55.86126, -4.24646) ):
+        # default coordinates UoS Royal Collage
         self.sam = Overlay()
         self.front = self.sam.radio.receiver.channels[0].frontend.analyser
         self.rec = self.front._spectrum_analyser   
@@ -35,7 +41,7 @@ class spectrum:
         self.rec.fft_size = _fft_size
         self.front.decimation_factor = _decimation_factor
         self.front.centre_frequency = _centre_frequency
-        self.sub_division = _sub_division
+        self.sub_div = _sub_div
     
         # get other parameters from the spectrum analyser class
         self.fs = 4096
@@ -55,15 +61,85 @@ class spectrum:
         self.maxhold = np.add(np.zeros(self.data_length),-200)
         #self.data_fmt = '%1.9f' # float to 3 decimal places
         # instance info
+        self.coordinates = (55.8626632,-4.2468702)  # robert flat gps coordinates
         self.time_start = "11-02-22_12" # start of the dataset and time
         self.time_end = ""         # end of the dataset time
         self.time_tot = 0           # total dataset time in hours
         self.fileData = []
         self.data = []
         
+    # Setters and getters    
+    
+    # set coordinates
+    def set_coordinates(self,_lat, _long):
+        self.coordinates = (_lat, _long)
+    
+    # get coordinates
+    def get_coordinates(self):
+        return self.coordinates
+    
+    # set number of frames
+    def set_frames_number(self,_frames):
+        self.frames = _frames
+    
+    # get number of frames
+    def get_frames_number(self):
+        return self.frames
+    
+    # returns max hold of generate data        
+    def get_maxhold(self):
+        return self.maxhold
+    
+    # returns window type as a string
+    def get_window(self):
+        return self.window_type
+    
+    # set window (refere to rfsoc_sam for names) 
+    def set_window(self, _window):
+        self.rec.window = _window
+        self.window_type = self.rec.window
+    
+    # set spectrum usits (refere to rfsoc_sam for names)
+    def set_spectrum_units(self, _units):
+        self.rec.spectrum_units = _units
+        self.units = self.rec.spectrum_units
+        
+    # get spectrum units
+    def get_spectrum_units(self):
+        return self.units
+    
+    # returns fft size
+    def get_fftsize(self):
+        return self.fft_size
+    # set fft size
+    def set_fftsize(self, _fft_size):
+        self.front.fft_size = _fft_size
+        self.fft_size = self.rec.fft_size
+        
+    # returns centre frequency 
+    def get_center_frequency(self):
+        if(self.sub_div):
+            return self.centre_frequency_arr
+        else
+            return self.centre_frequency
+        
+    # set cdecimation factor
+    def set_decimation_factor(self, _decimation_factor):
+        self.front.decimation_factor = _decimation_factor
+        self.fft_size = self.rec.decimation_factor
+    
+    def get_decimation_factor(self):
+        return self.decimation_factor
+        
+    # set centre frequency
+    def set_centre_frequency(self, _centre_frequency):
+        self.front.centre_frequency = _centre_frequency
+        self.fft_size = self.rec.centre_frequency
+        
+    # Other functionalities
+         
     def get_frame(self):
         self.rec.dma_enable = 1
-        #self.front._block.UpdateEvent(1)
         _data = self.rec.get_frame()
         self.rec.dma_enable = 0
         
@@ -73,30 +149,30 @@ class spectrum:
         data2 = _data[:center]
         _data = []
         _data = np.hstack((data1,data2))
-        
         _data = [float(i) for i in _data]
         
         # return spectrum data
         return _data
         
-    # writes input datato time stamped text file
+    # writes input data to time stamped text file
     def write_file(self,f, _data):
         # # change permission of the file to delete as required.
         # os.chmod(path_filename, 0o777)
         
         self.data = _data.astype('float32')
-        #self.data.astype('float32')
         self.data.tofile(f)
         os.chmod(self.fileData, 0o777)
 
     # generates max hold and time average data
     def generate_data(self):
         data = []
+        
         for cf in self.centre_frequency_arr:
             self.front.centre_frequency = float(cf)
-            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
-            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
-            self.rec.centre_frequency = int(cf)
+            if(self.sub_div):
+                self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
+                self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
+            # self.rec.centre_frequency = int(cf) # commented out as it should be redundant
             time.sleep(0.4)
             _data = np.add(np.zeros(self.fft_size),-200)
             for i in range(0,self.frames):
@@ -106,40 +182,14 @@ class spectrum:
             # concatenate  multiple scans if subdivision > 1
             data = np.concatenate((data,_data))
             # average data temporarly not used.
-            #self.average = np.add(self.average, data)
         self.maxhold = data
-        
-
-    # returns max hold of generate data        
-    def get_maxhold(self):
-        return self.maxhold
-    
-    # returns average of generate data
-    def get_average(self):
-        return self.average/self.frames
-    
-    # returns window type as a string
-    def get_window(self):
-        return self.window_type
-    # set window
-    def window(self, _window):
-        self.rec.window = _window
-        self.window_type = self.rec.window
-    
-    # returns fft size
-    def fftsize(self):
-        return self.fft_size
-    # set fft size
-    def fftsize(self, _fft_size):
-        self.front.fft_size = _fft_size
-        self.fft_size = self.rec.fft_size
-        
+   
     # returns sub-division
     def get_sub_div(self):
-        return self.sub_division
+        return self.sub_div
         
     # set subdivision    
-    def set_sub_div(self,_sub_division):
+    def set_sub_div(self,_sub_div):
         """
         To generate more accurate scan the spectrum can be scanned
         with higher accuracy by increasing the decimation factor
@@ -152,22 +202,25 @@ class spectrum:
         the subdivision variable will atomatically determine the decimation factor.
         given by: decimation factor = 2^div
         """
-        self.sub_division = _sub_division
-        self.front.decimation_factor = 2**_sub_division
-        self.decimation_factor = self.rec.decimation_factor
-        self.data_length = self.fft_size * self.decimation_factor/2
-        self.maxhold = np.add(np.zeros(int(self.data_length)),-200)
-        #self.average = np.zeros(int(self.data_length))
-        rate = self.fft_size/self.decimation_factor
-        # generate an array of center frequencies with current decimation factor and
-        # fft size to cover the whole spectrum 0 - 2 GHz.
-        cf_arr = np.arange(rate,self.fft_size-1,2*rate)/2
-        self.centre_frequency_arr = [int(i) for i in cf_arr]
-        self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
-        self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
+        self.sub_div = _sub_div
+        if(self.sub_div):
+            self.data_length = self.fft_size * self.decimation_factor/2
+            self.maxhold = np.add(np.zeros(int(self.data_length)),-200)
+            rate = self.fft_size/self.decimation_factor
+
+            # generate an array of center frequencies with current decimation factor and
+            # fft size to cover the whole spectrum 0 - 2 GHz.
+            cf_arr = np.arange(rate,self.fft_size-1,2*rate)/2
+            self.centre_frequency_arr = [int(i) for i in cf_arr]
+            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/2)
+            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/2)
+        else:
+            self.centre_frequency_arr = [self.centre_frequancy]
+            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
+            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
         
     def write_metadata(self):
-        latlng = (55.8626632,-4.2468702) # robert flat gps coordinates
+        latlng = self.coordinates
         self.meta = SigMFFile(
             data_file = self.fileData, # extension is optional
             global_info = {
@@ -176,8 +229,6 @@ class spectrum:
                 SigMFFile.AUTHOR_KEY: 'RFSoC 2x2',
                 SigMFFile.VERSION_KEY: sigmf.__version__,
                 SigMFFile.GEOLOCATION_KEY: Point((latlng)),
-                
-
             }
         )
         self.meta.add_capture(0, metadata = {
@@ -186,12 +237,12 @@ class spectrum:
             })
 
         self.meta.add_annotation(0, len(self.maxhold), metadata = {
-                SigMFFile.FLO_KEY: 0,
-                SigMFFile.FHI_KEY: 2048000000,
+                SigMFFile.FLO_KEY: self.lower_lim,
+                SigMFFile.FHI_KEY: self.upper_lim,
             })
         self.meta.tofile(self.fileMeta)
         
-        #os.chmod(self.fileMeta, 0o777)
+        os.chmod(self.fileMeta, 0o777)
         
         """
             currently it writes a new file for each hour, but this will be
@@ -208,11 +259,9 @@ class spectrum:
         self.time_start = datetime.now()
         
         path_filename = 'spectrum_data/S_'
-        # for single file per dataset
-        #self.fileData = path_filename + self.time_start.strftime("%d-%m-%y_%H")+'.sigmf-data'
-        #self.fileMeta = path_filename + self.time_start.strftime("%d-%m-%y_%H")+'.sigmf-meta'
         
         animation = "|/-\\" # animation to be removed if in boot mode.
+        # disable in boot mode.
         print(self.time_start ,flush = True)
         check = int(self.time_start.strftime("%M"))
         
@@ -224,7 +273,7 @@ class spectrum:
         if(len(mins) == len(skip_m)):
             skip_m = []
             b_skip = False
-        #print(datetime.now())
+        # disable whole if statement if in boot mode
         if(b_skip):
             print("skipping T"+str(skip_m))
         while (True):
@@ -244,6 +293,8 @@ class spectrum:
                 while(curr != int(now.strftime("%M"))):
                     # animation visualisation
                     T = curr - int(now.strftime("%M"))
+                                                        
+                    # disable in boot mode
                     print("  waiting for T-"+str(T)+" "+ animation[anim_idx % len(animation)]+"      ",end="\r",flush = True)
                     anim_idx += 1
                     time.sleep(0.2) # wait 0.2s animation
@@ -256,6 +307,7 @@ class spectrum:
                 self.generate_data()
                 # update time variables
                 self.time_end = datetime.now()
+                # disable in boot mode    
                 print("data gathered: *"+str(self.time_end))
                 # write metadata
                 time.sleep(5)
@@ -267,34 +319,29 @@ class spectrum:
             self.fileMeta = path_filename + file_time+'.sigmf-meta'
             with open(self.fileData, "wb") as f:
                 self.write_file(f, self.get_maxhold())
+            os.chmod(self.fileData, 0o777)    
             self.write_metadata()
             self.time_tot = self.time_tot + 1
             print("complete data file: " +file_time, flush=True)
             self.maxhold = np.add(np.zeros(int(self.data_length)),-200)
            
     
+                                                        
+# all of this whill be deleted. max called from SpecCTRL class
 print("initialising...")
 
-# set system time
-# set current time and date in the following string
-os.system("date -s \"25 FEB 2023 12:44:00\"")
-spec = spectrum()
-spec.set_sub_div(3)
+# set current time and date in the following string 
+os.system("date -s \"07 MAR 2023 12:44:00\"")
+spec = spectrum(coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates
+spec.set_sub_div(True)
+# Could make a function to print out current system specifications
 print("class spectrum created.")
-print("division        : "+ str(spec.sub_division))
+print("division         : "+ str(spec.sub_division))
 print("decimation factor: "+ str(spec.decimation_factor))
-print("center_frequency: "+ str(spec.rec.centre_frequency))
-print("cf array        : "+ str(spec.centre_frequency_arr))
-print("window type     : "+ spec.get_window())
-print("fft size        : "+ str(spec.fft_size))
+print("center_frequency : "+ str(spec.centre_frequency))
+print("cf array         : "+ str(spec.centre_frequency_arr))
+print("window type      : "+ spec.get_window())
+print("fft size         : "+ str(spec.fft_size))
 print("Upper and lower limit: "+ str(spec.upper_lim) +",     " +str(spec.lower_lim))
 spec.continuous_scan()
-
-#spec.generate_data()
-#print("data generated.")
-#data = spec.get_maxhold()
-#data = spec.get_average()
-#print("values returned.")
-#spec.write_file(data,"testspectrum.txt")
-#print("file written.")
 

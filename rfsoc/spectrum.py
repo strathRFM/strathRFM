@@ -61,7 +61,7 @@ class spectrum:
         self.maxhold = np.add(np.zeros(self.data_length),-200)
         #self.data_fmt = '%1.9f' # float to 3 decimal places
         # instance info
-        self.coordinates = (55.8626632,-4.2468702)  # robert flat gps coordinates
+        self.coordinates = _coordinates
         self.time_start = "11-02-22_12" # start of the dataset and time
         self.time_end = ""         # end of the dataset time
         self.time_tot = 0           # total dataset time in hours
@@ -127,6 +127,7 @@ class spectrum:
     def set_decimation_factor(self, _decimation_factor):
         self.front.decimation_factor = _decimation_factor
         self.fft_size = self.rec.decimation_factor
+        self.set_sub_div(self.sub_div) # update subdivision
     
     def get_decimation_factor(self):
         return self.decimation_factor
@@ -332,7 +333,8 @@ print("initialising...")
 
 # set current time and date in the following string 
 os.system("date -s \"07 MAR 2023 12:44:00\"")
-spec = spectrum(coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates
+spec = spectrum(coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates (default royal collage building george street entrance)
+spec.set_decimation_factor(8)
 spec.set_sub_div(True)
 # Could make a function to print out current system specifications
 print("class spectrum created.")

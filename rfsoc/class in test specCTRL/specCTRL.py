@@ -14,9 +14,10 @@ class SpecCTRL:
         self.spec_Data_Stream_Path = _spec_Data_Stream_Path
         self.spec = spectrum()
         self.start_on_boot = True
-        self.continuous_scan_enable = True
+        self.continuous_scan_enable = False
         self.full_spectrum_scan = False # enable full spectrum scan
         self.stream_data_enable = False
+        self.single_frame_enable = False
         self.app_enable = True         # continuously check if system needs to run.
                                        # if False exit specCTRL class and continue with boot.
         
@@ -33,8 +34,7 @@ class SpecCTRL:
         
     def continuous_scan(self):
         # need to modify continuous scan to only progress if 
-        #self.spec.continuous_scan()
-        print("scanning continuously.")
+        self.spec.continuous_scan()
        
     def unpickleFile(self, file_path):
         idx = 0
@@ -71,6 +71,7 @@ class SpecCTRL:
     def create_config(self,_changed):
         config_file = {b'changed':_changed,
                       b'continuous_scan_enable': self.continuous_scan_enable,
+                      b'single_frame_enable':self.single_frame_enable,
                       b'start_on_boot': self.start_on_boot,
                       b'full_spectrum_scan':self.full_spectrum_scan,
                       b'app_enable':self.app_enable,
@@ -91,6 +92,9 @@ class SpecCTRL:
             
             if(self.continuous_scan_enable != config_file[b'continuous_scan_enable']):
                 self.continuous_scan_enable = config_file[b'continuous_scan_enable']
+                
+            if(self.single_frame_enable != config_file[b'single_frame_enable']):
+                self.single_frame_enable = config_file[b'single_frame_enable']
                 
             if(self.stream_data_enable != config_file[b'stream_data_enable']):
                 self.stream_data_enable = config_file[b'stream_data_enable']
@@ -136,27 +140,35 @@ class SpecCTRL:
             
             self.create_config(False)
     
+    def spec_get_frame(self):
+        data = self.spec.get_frame()
+        toFile = {b'upper_lim': self.spec.get_upper_lim(),
+                  b'lower_lim': self.spec.get_lower_lim(),
+                  b'data': data}
+        self.pickleFile(self.spec_Data_Stream_Path,toFile)
+    
     def send_spec_data(self):
         while(self.stream_data_enable):
-            data = self.spec.get_frame()
-            toFile = {b'upper_lim': self.spec.get_upper_lim(),
-                      b'lower_lim': self.spec.get_lower_lim(),
-                      b'data': data}
-            self.pickleFile(self.spec_Data_Stream_Path,toFile)
+            self.spec_get_frame()
             self.check_config()
                 
         
     def start_CTRL(self):
-        self.create_config(True)
         while(self.app_enable):
             if(self.continuous_scan_enable):
                 # background gather data for dataset
                 print("continuous scan enabled.")
                 self.continuous_scan()
+                
             if(self.stream_data_enable):
                 # send data to GUI trough stream data file.
                 print("sending data to GUI.")
                 self.send_spec_data()
+                
+            if(self.single_frame_enable):
+                self.spec_get_frame()
+                self.single_frame_enable = False
+                self.create_config(False)
             #time.sleep(4)
             self.check_config()
             

@@ -71,6 +71,14 @@ class spectrum:
         
     # Setters and getters    
     
+    # set mins
+    def set_mins(self, _mins):
+        self.mins = _mins
+        
+    # get mins
+    def get_mins(self):
+        return self.mins
+    
     # set coordinates
     def set_coordinates(self,_lat, _long):
         self.coordinates = (_lat, _long)

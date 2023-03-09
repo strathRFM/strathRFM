@@ -333,7 +333,7 @@ print("initialising...")
 
 # set current time and date in the following string 
 os.system("date -s \"07 MAR 2023 12:44:00\"")
-spec = spectrum(coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates (default royal collage building george street entrance)
+spec = spectrum(_coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates (default royal collage building george street entrance)
 spec.set_decimation_factor(8)
 spec.set_sub_div(True)
 # Could make a function to print out current system specifications

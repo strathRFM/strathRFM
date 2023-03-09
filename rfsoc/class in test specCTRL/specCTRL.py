@@ -15,13 +15,13 @@ class SpecCTRL:
         self.spec = spectrum()
         self.start_on_boot = True
         self.continuous_scan_enable = False
-        self.full_spectrum_scan = False # enable full spectrum scan
         self.stream_data_enable = False
         self.single_frame_enable = False
         self.app_enable = True         # continuously check if system needs to run.
                                        # if False exit specCTRL class and continue with boot.
         
         # Spectrum class default values
+        self.full_spectrum_scan = False # enable full spectrum scan
         self.fft_size = self.spec.get_fftsize()
         self.centre_frequency = self.spec.get_centre_frequency()
         self.decimation_factor = self.spec.get_decimation_factor()
@@ -29,8 +29,6 @@ class SpecCTRL:
         self.window = self.spec.get_window()
         self.frame_number = self.spec.get_frames_number()
         self.coordinates = self.spec.get_coordinates()
-        
-        
         
     def continuous_scan(self):
         # need to modify continuous scan to only progress if 

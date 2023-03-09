@@ -12,7 +12,7 @@ class SpecCTRL:
                  
         self.config_Path = _config_Path
         self.spec_Data_Stream_Path = _spec_Data_Stream_Path
-        #self.spec = spectrum()
+        self.spec = spectrum()
         self.start_on_boot = True
         self.continuous_scan_enable = True
         self.full_spectrum_scan = False # enable full spectrum scan
@@ -68,15 +68,20 @@ class SpecCTRL:
                 res = False
         return res
         
-    def create_config(self):
-        config_file = {b'continuous_scan_enable': False,
-                      b'changed':True
-                      b'data_file_ready':True,
-                      b'start_on_boot': False,
-                      b'full_spectrum_scan':False,
-                      b'fft_size':4096,
-                      b'app_enable':True,
-                      b'stream_data_enable':False}
+    def create_config(self,_changed):
+        config_file = {b'changed':_changed,
+                      b'continuous_scan_enable': self.continuous_scan_enable,
+                      b'start_on_boot': self.start_on_boot,
+                      b'full_spectrum_scan':self.full_spectrum_scan,
+                      b'app_enable':self.app_enable,
+                      b'stream_data_enable':self.stream_data_enable,
+                      b'fft_size':self.fft_size,
+                      b'center_frequency':self.centre_frequency,
+                      b'decimation_factor':self.decimation_factor,
+                      b'units': self.units,
+                      b'window':self.window,
+                      b'frame_number':self.frame_number,
+                      b'coordinates':self.coordinates}
         res = self.pickleFile(self.config_Path, config_file)
     
     def check_config(self):
@@ -84,39 +89,65 @@ class SpecCTRL:
         res, config_file = self.unpickleFile(self.config_Path)
         if(config_file[b'changed'] == True):
             
-            self.continuous_scan_enable = config_file[b'continuous_scan_enable'] # or False
-            self.stream_data_enable = config_file[b'stream_data_enable']
-            self.data_file_ready = config_file[b'data_file_ready']
-            self.start_on_boot = config_file[b'start_on_boot']
-            self.app_enable = config_file[b'app_enable']
-            self.full_spectrum_scan = config_file[b'full_spectrum_scan']
-            # check time and update if discrepancy is detected
-
+            if(self.continuous_scan_enable != config_file[b'continuous_scan_enable']):
+                self.continuous_scan_enable = config_file[b'continuous_scan_enable']
+                
+            if(self.stream_data_enable != config_file[b'stream_data_enable']):
+                self.stream_data_enable = config_file[b'stream_data_enable']
+                
+            if(self.start_on_boot != config_file[b'start_on_boot']):
+                self.start_on_boot = config_file[b'start_on_boot']
+                
+            if(self.app_enable != config_file[b'app_enable']):
+                self.app_enable = config_file[b'app_enable']
+            
             # check other spectrum parameters
-            # if different than what is stored here, than update them in spectrum class
-            # and here
+            if(self.full_spectrum_scan != config_file[b'full_spectrum_scan']):
+                self.spec.set_sub_div(config_file[b'full_spectrum_scan'])
+                self.full_spectrum_scan = self.spec.get_sub_div()
+
             if(self.fft_size != config_file[b'fft_size']):
-                #self.spec.set_fft_size(file["fft_size"])
-                self.fft_size = config_file[b'fft_size']
-        
+                self.spec.set_fftsize(config_file[b'fft_size'])
+                self.fft_size = self.spec.get_fftsize()
+            
+            if(self.center_frequency != config_file[b'center_frequency']):
+                self.spec.set_center_frequency(config_file[b'center_frequency'])
+                self.center_frequency = self.spec.get_center_frequency()
+                
+            if(self.decimation_factor != config_file[b'decimation_factor']):
+                self.spec.set_decimation_factor(config_file[b'decimation_factor'])
+                self.decimation_factor = self.spec.get_decimation_factor()
+                
+            if(self.units != config_file[b'units']):
+                self.spec.set_spectrum_units(config_file[b'units'])
+                self.units = self.spec.get_spectrum_units()
+                
+            if(self.window != config_file[b'window']):
+                self.spec.set_window(config_file[b'window'])
+                self.window = self.spec.get_window()
+                
+            if(self.frame_number != config_file[b'frame_number']):
+                self.spec.set_frame_number(config_file[b'frame_number'])
+                self.frame_number = self.spec.get_frame_number()
+                
+            if(self.coordinates != config_file[b'coordinates']):
+                self.spec.set_coordinates(config_file[b'coordinates'])
+                self.coordinates = self.spec.get_coordinates()
+            
+            self.create_config(False)
     
     def send_spec_data(self):
         while(self.stream_data_enable):
-            time.sleep(0.01)
-            if(self.data_file_ready):
-                data = np.add(np.random.rand(2048,1)*2,-1)
-                
-                # get_frame instead of random numbers
-                toFile = {b'upper_lim': 2048,
-                          b'lower_lim': 0,
-                          b'nr_samples': len(data),
-                          b'data': data}
-                self.pickleFile(self.spec_Data_Stream_Path,toFile)
+            data = self.spec.get_frame()
+            toFile = {b'upper_lim': self.spec.get_upper_lim(),
+                      b'lower_lim': self.spec.get_lower_lim(),
+                      b'data': data}
+            self.pickleFile(self.spec_Data_Stream_Path,toFile)
             self.check_config()
                 
         
     def start_CTRL(self):
-        self.create_config()
+        self.create_config(True)
         while(self.app_enable):
             if(self.continuous_scan_enable):
                 # background gather data for dataset

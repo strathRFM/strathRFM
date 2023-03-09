@@ -79,11 +79,11 @@ class spectrum:
         return self.coordinates
     
     # set number of frames
-    def set_frames_number(self,_frames):
+    def set_frame_number(self,_frames):
         self.frames = _frames
     
     # get number of frames
-    def get_frames_number(self):
+    def get_frame_number(self):
         return self.frames
     
     # returns max hold of generate data        

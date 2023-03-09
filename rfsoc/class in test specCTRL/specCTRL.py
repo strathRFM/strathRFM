@@ -6,6 +6,8 @@
 import pickle
 import time
 import numpy as np
+import os
+
 class SpecCTRL:
     def __init__(self,_config_Path = "config.pkl", # path to the configuration file writable by GUI
                  _spec_Data_Stream_Path = "data.pkl" ):  # path of data file writable from this calss
@@ -152,6 +154,8 @@ class SpecCTRL:
                 
         
     def start_CTRL(self):
+        if(os.path.isfile(self.config_Path) != True):
+            self.create_config(True)
         while(self.app_enable):
             if(self.continuous_scan_enable):
                 # background gather data for dataset

@@ -73,10 +73,18 @@ class spectrum:
     # set coordinates
     def set_coordinates(self,_lat, _long):
         self.coordinates = (_lat, _long)
-    
-    # get coordinates
+        
+     # get coordinates
     def get_coordinates(self):
         return self.coordinates
+    
+    # get upper_lim
+    def get_upper_lim(self):
+        return self.upper_lim
+    
+    # get lower_lim
+    def get_lower_lim(self):
+        return self.lower_lim
     
     # set number of frames
     def set_frame_number(self,_frames):

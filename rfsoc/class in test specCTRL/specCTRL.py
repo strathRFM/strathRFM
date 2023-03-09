@@ -25,6 +25,7 @@ class SpecCTRL:
         # Spectrum class default values
         self.full_spectrum_scan = False # enable full spectrum scan
         self.fft_size = self.spec.get_fftsize()
+        self.mins = self.spec.get_mins()
         self.centre_frequency = self.spec.get_centre_frequency()
         self.decimation_factor = self.spec.get_decimation_factor()
         self.units = self.spec.get_spectrum_units()
@@ -71,6 +72,7 @@ class SpecCTRL:
     def create_config(self,_changed):
         config_file = {b'changed':_changed,
                       b'continuous_scan_enable': self.continuous_scan_enable,
+                      b'mins':self.mins,
                       b'single_frame_enable':self.single_frame_enable,
                       b'start_on_boot': self.start_on_boot,
                       b'full_spectrum_scan':self.full_spectrum_scan,
@@ -109,7 +111,11 @@ class SpecCTRL:
             if(self.full_spectrum_scan != config_file[b'full_spectrum_scan']):
                 self.spec.set_sub_div(config_file[b'full_spectrum_scan'])
                 self.full_spectrum_scan = self.spec.get_sub_div()
-
+                
+            if(self.mins != config_file[b'mins']):
+                self.spec.set_mins(config_file[b'mins'])
+                self.mins = self.spec.get_mins()
+                
             if(self.fft_size != config_file[b'fft_size']):
                 self.spec.set_fftsize(config_file[b'fft_size'])
                 self.fft_size = self.spec.get_fftsize()

@@ -67,6 +67,7 @@ class spectrum:
         self.time_tot = 0           # total dataset time in hours
         self.fileData = []
         self.data = []
+        self.mins = [0, 15, 30, 45]
         
     # Setters and getters    
     
@@ -263,7 +264,7 @@ class spectrum:
     def continuous_scan(self):
         print("------------ CONTINUOUS ------------")
         
-        mins = [0, 15, 30, 45]   # times at which to run generate data
+        _mins = self.mins   # times at which to run generate data
         skip_m = []
         self.time_start = datetime.now()
         
@@ -275,11 +276,11 @@ class spectrum:
         check = int(self.time_start.strftime("%M"))
         
         b_skip = False
-        for m in mins:
+        for m in _mins:
             if(m < check):
                 skip_m.append(m)
                 b_skip = True
-        if(len(mins) == len(skip_m)):
+        if(len(_mins) == len(skip_m)):
             skip_m = []
             b_skip = False
         # disable whole if statement if in boot mode
@@ -290,7 +291,7 @@ class spectrum:
             now = datetime.now()
             
             # get 4 times 40 frames a hour
-            for curr in mins:
+            for curr in _mins:
                 if(b_skip):
                     if(skip_m == []):
                         b_skip = False

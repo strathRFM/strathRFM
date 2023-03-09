@@ -31,21 +31,36 @@ class SpecCTRL:
         print("scanning continuously.")
        
     def unpickleFile(self, file_path):
-        try:
-            with open(file_path, 'rb') as fo:
-                dict = pickle.load(fo, encoding='bytes')
-                return True, dict
-        except:
-            dict = {}
-            return False, dict
+        idx = 0
+        res = False
+        while(res == False):
+            try:
+                with open(file_path, 'rb') as fo:
+                    dict = pickle.load(fo, encoding='bytes')
+                    res = True
+            except:
+                idx += 1
+                if(idx >10):
+                    break
+                time.sleep(0.001)
+                dict = {}
+                res =  False
+        return res, dict
             
     def pickleFile(self, file_path, data):
-        try:
-            pickle.dump(data, open(file_path, 'wb'))
-            return True
-        except:
-            return False
-        
+        idx = 0
+        res = False
+        while(res == False):
+            try:
+                pickle.dump(data, open(file_path, 'wb'))
+                res = True
+            except:
+                idx += 1
+                if(idx >10):
+                    break
+                time.sleep(0.001)
+                res = False
+        return res
         
     def create_config(self):
         config_file = {b'continuous_scan_enable': True,
@@ -60,13 +75,7 @@ class SpecCTRL:
     def check_config(self):
         # this function loads in the config file and updates class variables
         res, config_file = self.unpickleFile(self.config_Path)
-        idx = 0
-        while(res == False):
-            time.sleep(4)
-            idx += 1
-            res, config_file = self.unpickleFile(self.config_Path)
-            if(idx >10):
-                break
+       
             
         self.continuous_scan_enable = config_file[b'continuous_scan_enable'] # or False
         self.stream_data_enable = config_file[b'stream_data_enable']
@@ -114,3 +123,6 @@ class SpecCTRL:
                 self.send_spec_data()
             
             
+ctrl = SpecCTRL()
+#ctrl.create_config()
+ctrl.start_CTRL()

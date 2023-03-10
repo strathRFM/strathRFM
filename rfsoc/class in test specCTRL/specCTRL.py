@@ -7,6 +7,7 @@ import pickle
 import time
 import numpy as np
 import os
+from datetime import datetime
 
 class SpecCTRL:
     def __init__(self,_config_Path = "config.pkl", # path to the configuration file writable by GUI
@@ -32,6 +33,7 @@ class SpecCTRL:
         self.window = self.spec.get_window()
         self.frame_number = self.spec.get_frames_number()
         self.coordinates = self.spec.get_coordinates()
+        self.date_time = datetime.now()
         
     def continuous_scan(self):
         # need to modify continuous scan to only progress if 
@@ -84,7 +86,8 @@ class SpecCTRL:
                       b'units': self.units,
                       b'window':self.window,
                       b'frame_number':self.frame_number,
-                      b'coordinates':self.coordinates}
+                      b'coordinates':self.coordinates,
+                      b'date_time':self.date_time}
         res = self.pickleFile(self.config_Path, config_file)
     
     def check_config(self):
@@ -144,7 +147,14 @@ class SpecCTRL:
                 self.spec.set_coordinates(config_file[b'coordinates'])
                 self.coordinates = self.spec.get_coordinates()
             
+            if(self.date_time != config_file[b'date_time']):
+                self.date_time = self.set_time(config_file[b'date_time'])
+            
             self.create_config(False)
+    
+    
+    def set_time(_time):
+        os.system("date -s \""+str(_time)+"\"");
     
     def spec_get_frame(self):
         data = self.spec.get_frame()
@@ -181,5 +191,4 @@ class SpecCTRL:
             self.check_config()
             
 ctrl = SpecCTRL()
-#ctrl.create_config()
 ctrl.start_CTRL()

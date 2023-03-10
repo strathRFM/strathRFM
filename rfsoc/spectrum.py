@@ -25,6 +25,7 @@ from sigmf.utils import get_data_type_str
 import geojson
 from geojson import Point
 import datetime as dt
+import pickle
 
 class spectrum:
     def __init__(self,_fft_size = 4096, 
@@ -230,8 +231,8 @@ class spectrum:
             # fft size to cover the whole spectrum 0 - 2 GHz.
             cf_arr = np.arange(rate,self.fft_size-1,2*rate)/2
             self.centre_frequency_arr = [int(i) for i in cf_arr]
-            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/2)
-            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/2)
+            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/4)
+            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/4)
         else:
             self.centre_frequency_arr = [self.centre_frequancy]
             self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
@@ -267,7 +268,22 @@ class spectrum:
             changed to write a single data file per dataset.
         """
         
-    
+    def unpickleFile(self):
+        idx = 0
+        res = False
+        cont_scan = True
+        while(res == False):
+            try:
+                with open('config.pkl', 'rb') as fo:
+                    dict = pickle.load(fo, encoding='bytes')
+                    cont_scan = dict[b'continuous_scan_enable']
+                    res = True
+            except:
+                idx += 1
+                if(idx >10):
+                    break
+                time.sleep(0.001)
+        return res, cont_scan
     
     def continuous_scan(self):
         print("------------ CONTINUOUS ------------")
@@ -275,7 +291,7 @@ class spectrum:
         _mins = self.mins   # times at which to run generate data
         skip_m = []
         self.time_start = datetime.now()
-        
+        cont_scan = True
         path_filename = 'spectrum_data/S_'
         
         animation = "|/-\\" # animation to be removed if in boot mode.
@@ -294,7 +310,7 @@ class spectrum:
         # disable whole if statement if in boot mode
         if(b_skip):
             print("skipping T"+str(skip_m))
-        while (True):
+        while (cont_scan):
             # create data file every hour
             now = datetime.now()
             
@@ -319,7 +335,9 @@ class spectrum:
                     #time.sleep(60) # wait 1 min boot mode
                     now = datetime.now()
                     #if(int(now.strftime("%M")) > 3):
-                    #    exit()
+                    _,cont_scan = self.unpickleFile()
+                    if(cont_scan == False):
+                        break
                         
                 # generate max hold for 40 frames 
                 self.generate_data()
@@ -328,8 +346,9 @@ class spectrum:
                 # disable in boot mode    
                 print("data gathered: *"+str(self.time_end))
                 # write metadata
-                time.sleep(5)
-            
+                if(cont_scan == False):
+                        break
+                
             now = datetime.now()
             file_time = now.strftime("%d-%m-%y_%H")
             # single file per hour
@@ -342,25 +361,3 @@ class spectrum:
             self.time_tot = self.time_tot + 1
             print("complete data file: " +file_time, flush=True)
             self.maxhold = np.add(np.zeros(int(self.data_length)),-200)
-           
-    
-                                                        
-# all of this whill be deleted. max called from SpecCTRL class
-print("initialising...")
-
-# set current time and date in the following string 
-os.system("date -s \"07 MAR 2023 12:44:00\"")
-spec = spectrum(_coordinates = (55.8626632,-4.2468702)) # Robert Flat coordinates (default royal collage building george street entrance)
-spec.set_decimation_factor(8)
-spec.set_sub_div(True)
-# Could make a function to print out current system specifications
-print("class spectrum created.")
-print("division         : "+ str(spec.sub_division))
-print("decimation factor: "+ str(spec.decimation_factor))
-print("center_frequency : "+ str(spec.centre_frequency))
-print("cf array         : "+ str(spec.centre_frequency_arr))
-print("window type      : "+ spec.get_window())
-print("fft size         : "+ str(spec.fft_size))
-print("Upper and lower limit: "+ str(spec.upper_lim) +",     " +str(spec.lower_lim))
-spec.continuous_scan()
-

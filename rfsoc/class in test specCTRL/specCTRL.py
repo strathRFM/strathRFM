@@ -98,6 +98,8 @@ class SpecCTRL:
         
         if(config_file[b'enable_time']):
             self.set_time(config_file[b'date_time'])
+            self.enable_time = False
+            self.create_config(False)
         
         if(config_file[b'changed'] == True):
             

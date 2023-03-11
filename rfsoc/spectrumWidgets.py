@@ -15,9 +15,10 @@ import time
 from datetime import datetime
 import collections
 import numpy as np
+import re
 from IPython.display import clear_output
 import ipywidgets as widgets
-from ipywidgets import Button, HBox, VBox
+from ipywidgets import Button, HBox, VBox, Label, Layout
 from IPython.display import display
    
     
@@ -38,6 +39,7 @@ def create_config():
                   b'window':'hamming',
                   b'frame_number':60,
                   b'coordinates':(0,0),
+                  b'enable_time':False,
                   b'date_time':datetime.now()}
     res = pickleFile(config_Path, config_file)
     
@@ -78,10 +80,13 @@ class spectrumWidgets:
                  _spec_Data_Stream_Path = "data.pkl" ):  # path of data file writable from this calss
         
         self.config_Path = _config_Path
+        self.data_Path = _spec_Data_Stream_Path
         _, self.f = unpickleFile(self.config_Path);
         self.out = widgets.Output(layout={'border': '1px solid black'})
-        self.out2 = widgets.Output()
-        
+        self.full_scan = widgets.Checkbox(description = 'Full Scan',
+                                          value = self.f[b'full_spectrum_scan'],
+                                         indent = False,
+                                         layout=Layout(width = '50%'))
         self.get_frame = widgets.Button(description='get Frame')
         self.push_settings = widgets.Button(description='Push settings')
         # radio buttons
@@ -90,6 +95,7 @@ class spectrumWidgets:
                         value=self.set_radio_val(), # Defaults to 'pineapple'
                     #    layout={'width': 'max-content'}, # If the items' names are long
                         description='MODE:',
+                        layout = self.full_scan.layout,
                         disabled=False
         )
         
@@ -111,9 +117,9 @@ class spectrumWidgets:
         
         # spectrum definitions
         self.center_frequency = widgets.Text(
-            value= str(self.f[b'centre_frequency']),
+            value= str(int(self.f[b'centre_frequency']/1e6)),
             placeholder='integer',
-            description='Centre f:',
+            description='C freq (MHz):',
             disabled=False,
             indent=True
         )
@@ -179,26 +185,30 @@ class spectrumWidgets:
     def set_radio_val(self):
         if(self.f[b'stream_data_enable']):
             self.get_frame.disabled=True
+            self.full_scan.disabled = True
             return 'stream data'
         elif(self.f[b'continuous_scan_enable']):
             self.get_frame.disabled=True
+            self.full_scan.disabled = False
             return 'continuous scan'
         else:
             self.get_frame.disabled=False
+            self.full_scan.disabled = True
             return 'idle'
         
     def AppLayout(self):
         
-        data = {'Spectrum': [0,0,0,1,0]}
-        self.live_plot(data)
-            
+        data = {b'data': [0,0,0,1,0], b'lower_lim': -1, b'upper_lim': 2}
+        self.live_plot(data)   
             
         
         # define system settings
         Tbuttons = HBox([self.boot,self.app_enable, self.get_frame],layout={'border': '1px solid black'})
         
-        self.L = VBox([Tbuttons,
-                       self.rad,
+        self.L = VBox([Label("strathRFM System Settings:"),
+                       Tbuttons,
+                       HBox([self.rad,self.full_scan]),
+                       Label("Spectrum Settings:"),
                        HBox([self.center_frequency,self.push_settings]),
                        self.fft_size,
                        self.decimation_factor,
@@ -207,6 +217,7 @@ class spectrumWidgets:
                        self.mins,
                        self.frames,
                        self.coordinates,
+                       Label("Local time: " + str(datetime.now())),
                        HBox([self.device_time,self.time])
                       ],
                       layout={'border': '1px solid black'})
@@ -214,16 +225,47 @@ class spectrumWidgets:
         # on clicks and updates
         self.boot.on_click(self.update_boot)
         self.app_enable.on_click(self.update_app_enable)
+        self.push_settings.on_click(self.update_settings)
         self.get_frame.on_click(self.update_frame)
         self.rad.observe(self.update_mode, names='value')
         
         # display
-        display(HBox([self.L,self.out]),self.out2)
+        display(HBox([self.L,self.out]))
+    
+    def update_settings(self,b):
+        self.f[b'changed'] = True
+        self.f[b'centre_frequency'] = int(int(self.center_frequency.value)*1e6)
+        self.f[b'fft_size'] = int(self.fft_size.value)
+        self.f[b'decimation_factor'] = int(self.decimation_factor.value)
+        self.f[b'window'] = self.window.value
+        self.f[b'units'] = self.units.value
+        
+        list_mins = re.sub("[\[\]]","",self.mins.value)
+        self.f[b'mins'] = [int(i) for i in list(list_mins.split(','))]
+        self.f[b'frame_number'] = int(self.frames.value)
+        
+        list_coor = re.sub("[())]","",self.coordinates.value).split(',')
+        self.f[b'coordinates'] = (int(list_coor[0]),int(list_coor[1]))
+        
+        pickleFile(self.config_Path, self.f)
+        
+    
+    
+    def update_time(self,b):
+        self.f[b'enable_time'] = True
+        self.f[b'date_time'] = datetime.now()
+        # possibly change variable that updates time 
+        pickleFile(self.config_Path, self.f)
     
     def update_frame(self,b):
-        #data['spectrum'] = dataf[b'data']
-        data = {'Spectrum': np.random.rand(100)}
-        self.live_plot(data)
+        self.f[b'single_frame_enable'] = True    
+        self.f[b'changed'] = True  
+        pickleFile(self.config_Path, self.f)
+        time.sleep(0.3)
+        #data = {'Spectrum': np.random.rand(100)}
+        res, data = unpickleFile(self.data_Path)
+        if(res):
+            self.live_plot(data)
     
     
     def update_boot(self,b):
@@ -242,13 +284,12 @@ class spectrumWidgets:
         with self.out:
             clear_output(wait=True)
             plt.figure(figsize=figsize)
-            for label,data in data_dict.items():
-                plt.plot(data, label=label)
+            x = np.linspace(data_dict[b'lower_lim'], data_dict[b'upper_lim'], len(data_dict[b'data']))
+            plt.plot(x/1e6,data_dict[b'data'])
             plt.title(title)
             plt.grid(True)
-            plt.xlabel('epoch')
-            plt.ylim(-1, 1)
-            plt.legend(loc='center left') # the plot evolves to the right
+            plt.xlabel('Frequency [MHz]')
+            plt.ylabel(self.f[b'units'])
             plt.show()
         
     def update_app_enable(self,b):
@@ -276,14 +317,19 @@ class spectrumWidgets:
         if(change['new'] == 'stream data'):
             self.f[b'stream_data_enable'] = True
             self.f[b'continuous_scan_enable'] = False
+            self.full_scan.disabled = True
+            self.full_scan.value = False
             self.get_frame.disabled=True
         elif(change['new'] == 'continuous scan'):
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = True
             self.get_frame.disabled=True
+            self.full_scan.disabled = False
         else:
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = False
+            self.full_scan.value = False
+            self.full_scan.disabled = True
             self.get_frame.disabled=False
         self.f[b'changed'] = True    
         pickleFile(self.config_Path, self.f)

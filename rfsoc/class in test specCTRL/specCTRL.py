@@ -33,6 +33,7 @@ class SpecCTRL:
         self.window = self.spec.get_window()
         self.frame_number = self.spec.get_frames_number()
         self.coordinates = self.spec.get_coordinates()
+        self.enable_time = False
         self.date_time = datetime.now()
         
     def continuous_scan(self):
@@ -87,12 +88,17 @@ class SpecCTRL:
                       b'window':self.window,
                       b'frame_number':self.frame_number,
                       b'coordinates':self.coordinates,
+                      b'enable_time':self.enable_time,
                       b'date_time':self.date_time}
         res = self.pickleFile(self.config_Path, config_file)
     
     def check_config(self):
         # this function loads in the config file and updates class variables
         res, config_file = self.unpickleFile(self.config_Path)
+        
+        if(config_file[b'enable_time']):
+            self.set_time(config_file[b'date_time'])
+        
         if(config_file[b'changed'] == True):
             
             if(self.continuous_scan_enable != config_file[b'continuous_scan_enable']):
@@ -146,9 +152,6 @@ class SpecCTRL:
             if(self.coordinates != config_file[b'coordinates']):
                 self.spec.set_coordinates(config_file[b'coordinates'])
                 self.coordinates = self.spec.get_coordinates()
-            
-            if(self.date_time != config_file[b'date_time']):
-                self.date_time = self.set_time(config_file[b'date_time'])
             
             self.create_config(False)
     

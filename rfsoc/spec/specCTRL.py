@@ -8,6 +8,7 @@ import time
 import numpy as np
 import os
 from datetime import datetime
+from spectrum import spectrum
 
 class SpecCTRL:
     def __init__(self,_config_Path = "config.pkl", # path to the configuration file writable by GUI

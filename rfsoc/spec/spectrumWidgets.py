@@ -119,7 +119,7 @@ class spectrumWidgets:
         self.center_frequency = widgets.Text(
             value= str(int(self.f[b'centre_frequency']/1e6)),
             placeholder='integer',
-            description='C freq (MHz):',
+            description='Centre freq:',
             disabled=False,
             indent=True
         )
@@ -132,23 +132,24 @@ class spectrumWidgets:
             indent=True
         )
         self.fft_size = widgets.Dropdown(
-            options=['128', '256', '512', '1024', '2048', '4096' ],
+            options=['64','128', '256', '512', '1024', '2048', '4096', '8192' ],
             value=str(self.f[b'fft_size']),
             description='FFT size:',
             disabled=False,
             indent=True
         )
         self.decimation_factor = widgets.Dropdown(
-            options=['2', '4', '8', '16','32'],
+            options=['2', '4', '8', '16','32','64'],
             value=str(self.f[b'decimation_factor']),
-            description='Decimation:',
+            description='DF:',
             disabled=False,
             indent=True
         )
         self.window = widgets.Dropdown(
-            options=['rectangular', 'hamming', 'hanning', 'Blackman'],
+            options=['rectangular','bartlett' ,'hamming', 'hanning', 'blackman'],
             value=str(self.f[b'window']),
-            description='Window Type:',
+            description='Window:',
+            hover = 'Window type to be used when computing FFT',
             disabled=False,
             indent=True
         )
@@ -162,7 +163,7 @@ class spectrumWidgets:
         self.frames = widgets.Text(
             value= str(self.f[b'frame_number']),
             placeholder='please input a number',
-            description='Nr of Frames:',
+            description='Frames:',
             disabled=False,
             indent=True
         )
@@ -198,7 +199,7 @@ class spectrumWidgets:
         
     def AppLayout(self):
         
-        data = {b'data': [0,0,0,1,0], b'lower_lim': -1, b'upper_lim': 2}
+        data = {b'data': [0,5,3,1,3,5,0], b'lower_lim': -1, b'upper_lim': 2}
         self.live_plot(data)   
             
         
@@ -208,16 +209,16 @@ class spectrumWidgets:
         self.L = VBox([Label("strathRFM System Settings:"),
                        Tbuttons,
                        HBox([self.rad,self.full_scan]),
-                       Label("Spectrum Settings:"),
-                       HBox([self.center_frequency,self.push_settings]),
+                       HBox([Label("Spectrum Settings:__________________________"),self.push_settings]),
+                       HBox([self.center_frequency,Label("(Mhz)")]),
                        self.fft_size,
                        self.decimation_factor,
                        self.window,
-                       self.units,
+                       HBox([self.units,Label("(Spectrum computed)")]),
                        self.mins,
-                       self.frames,
-                       self.coordinates,
-                       Label("Local time: " + str(datetime.now())),
+                       HBox([self.frames,Label("(per sample)")]),
+                       HBox([self.coordinates,Label("(Lat,Long)")]),
+                       Label("Local time:____" + str(datetime.now())),
                        HBox([self.device_time,self.time])
                       ],
                       layout={'border': '1px solid black'})
@@ -228,9 +229,24 @@ class spectrumWidgets:
         self.push_settings.on_click(self.update_settings)
         self.get_frame.on_click(self.update_frame)
         self.rad.observe(self.update_mode, names='value')
+        self.time.on_click(self.update_time)
+        self.center_frequency.observe(self.clear_setting_button, names='value')
+        self.fft_size.observe(self.clear_setting_button, names='value')
+        self.decimation_factor.observe(self.clear_setting_button, names='value')
+        self.window.observe(self.clear_setting_button, names='value')
+        self.units.observe(self.clear_setting_button, names='value')
+        self.mins.observe(self.clear_setting_button, names='value')
+        self.frames.observe(self.clear_setting_button, names='value')
+        self.coordinates.observe(self.clear_setting_button, names='value')
+        
         
         # display
         display(HBox([self.L,self.out]))
+        
+        
+        
+        
+
     
     def update_settings(self,b):
         self.f[b'changed'] = True
@@ -246,16 +262,20 @@ class spectrumWidgets:
         
         list_coor = re.sub("[())]","",self.coordinates.value).split(',')
         self.f[b'coordinates'] = (int(list_coor[0]),int(list_coor[1]))
-        
-        pickleFile(self.config_Path, self.f)
+        res = pickleFile(self.config_Path, self.f)
+        if(res):
+            self.push_settings.style.button_color = 'lightgreen'
         
     
     
     def update_time(self,b):
         self.f[b'enable_time'] = True
         self.f[b'date_time'] = datetime.now()
+        self.device_time.value = str(self.f[b'date_time'])
         # possibly change variable that updates time 
-        pickleFile(self.config_Path, self.f)
+        res = pickleFile(self.config_Path, self.f)
+        if(res):
+            self.time.style.button_color = 'lightgreen'
     
     def update_frame(self,b):
         self.f[b'single_frame_enable'] = True    
@@ -310,6 +330,12 @@ class spectrumWidgets:
         
         self.f[b'changed'] = True    
         pickleFile(self.config_Path, self.f)
+
+        
+        
+        
+    def clear_setting_button(self,change):
+        self.push_settings.style.button_color = 'lightblue'
         
     def update_mode(self,change):
         #with self.out2:

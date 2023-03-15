@@ -41,7 +41,7 @@ def create_config():
                   b'coordinates':(0,0),
                   b'enable_time':False,
                   b'date_time':datetime.now()}
-    res = pickleFile(config_Path, config_file)
+    res = pickleFile('config.pkl', config_file)
     
 def unpickleFile(file_path):
     idx = 0
@@ -228,6 +228,7 @@ class spectrumWidgets:
         self.app_enable.on_click(self.update_app_enable)
         self.push_settings.on_click(self.update_settings)
         self.get_frame.on_click(self.update_frame)
+        self.full_scan.observe(self.update_full_scan, names = 'value')
         self.rad.observe(self.update_mode, names='value')
         self.time.on_click(self.update_time)
         self.center_frequency.observe(self.clear_setting_button, names='value')
@@ -336,7 +337,12 @@ class spectrumWidgets:
         
     def clear_setting_button(self,change):
         self.push_settings.style.button_color = 'lightblue'
-        
+    
+    def update_full_scan(self,change):
+        self.f[b'changed'] = True   
+        self.f[b'full_spectrum_scan'] = self.full_scan.value
+        pickleFile(self.config_Path, self.f)
+    
     def update_mode(self,change):
         #with self.out2:
         #    print(change['new'])
@@ -357,5 +363,7 @@ class spectrumWidgets:
             self.full_scan.value = False
             self.full_scan.disabled = True
             self.get_frame.disabled=False
-        self.f[b'changed'] = True    
+            
+        self.f[b'full_spectrum_scan'] = self.full_scan.value
+        self.f[b'changed'] = True   
         pickleFile(self.config_Path, self.f)

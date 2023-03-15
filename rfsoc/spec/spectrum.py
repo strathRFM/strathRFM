@@ -138,7 +138,7 @@ class spectrum:
     def get_center_frequency(self):
         if(self.sub_div):
             return self.centre_frequency_arr
-        else
+        else:
             return self.centre_frequency
         
     # set cdecimation factor
@@ -231,8 +231,8 @@ class spectrum:
             # fft size to cover the whole spectrum 0 - 2 GHz.
             cf_arr = np.arange(rate,self.fft_size-1,2*rate)/2
             self.centre_frequency_arr = [int(i) for i in cf_arr]
-            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/4)
-            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/4)
+            self.lower_lim = self.rec.centre_frequency-((self.fs*1e6)/4)
+            self.upper_lim = self.rec.centre_frequency+((self.fs*1e6)/4)
         else:
             self.centre_frequency_arr = [self.centre_frequancy]
             self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)

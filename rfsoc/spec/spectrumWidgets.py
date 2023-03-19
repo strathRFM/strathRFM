@@ -3,7 +3,7 @@
 
 """
     Author: Robert Incze
-    Date: 10/03/2023
+    Date: 19/03/2023
     Description: control class, that enables interactive editing of the config.pkl file in turn controlling the 
                 specCTRL and the spectrum analyser.
 """
@@ -33,7 +33,7 @@ def create_config():
                   b'stream_data_enable':False,
                   b'mins':[0,15,30,45],
                   b'fft_size':4096,
-                  b'centre_frequency':1024000000,
+                  b'centre_frequency':1024,
                   b'decimation_factor':4,
                   b'units': 'dBFS',
                   b'window':'hamming',
@@ -74,7 +74,7 @@ def pickleFile(file_path, data):
             time.sleep(0.001)
             res = False
     return res
-
+###################################################################################################
 class spectrumWidgets:
     def __init__(self,_config_Path = "config.pkl", # path to the configuration file writable by GUI
                  _spec_Data_Stream_Path = "data.pkl" ):  # path of data file writable from this calss
@@ -88,7 +88,7 @@ class spectrumWidgets:
                                          indent = False,
                                          layout=Layout(width = '50%'))
         self.get_frame = widgets.Button(description='get Frame')
-        self.push_settings = widgets.Button(description='Push settings')
+        self.push_settings = widgets.Button(description='Push settings', indent = True)
         # radio buttons
         self.rad = widgets.RadioButtons(
                         options=['continuous scan', 'stream data', 'idle'],
@@ -117,7 +117,7 @@ class spectrumWidgets:
         
         # spectrum definitions
         self.center_frequency = widgets.Text(
-            value= str(int(self.f[b'centre_frequency']/1e6)),
+            value= str(int(self.f[b'centre_frequency'])),
             placeholder='integer',
             description='Centre freq:',
             disabled=False,
@@ -181,7 +181,17 @@ class spectrumWidgets:
             indent=True
         )
         self.time = widgets.Button(description='update device time')
-        # definitions
+        self.pickdate = widgets.DatePicker(
+            description='Local time:',
+            disabled=False,
+            value = datetime.now().astimezone(tz=None)
+        )
+        self.picktime = widgets.Text(
+            disabled=False,
+            value = datetime.now().strftime("%H:%M"),
+            layout=Layout(width='80px', height='38px')
+        )
+    # definitions
         
     def set_radio_val(self):
         if(self.f[b'stream_data_enable']):
@@ -199,7 +209,7 @@ class spectrumWidgets:
         
     def AppLayout(self):
         
-        data = {b'data': [0,5,3,1,3,5,0], b'lower_lim': -1, b'upper_lim': 2}
+        data = {b'data': [-130,0,-70,-100,-70,0,-130], b'lower_lim': -1, b'upper_lim': 2}
         self.live_plot(data)   
             
         
@@ -209,7 +219,7 @@ class spectrumWidgets:
         self.L = VBox([Label("strathRFM System Settings:"),
                        Tbuttons,
                        HBox([self.rad,self.full_scan]),
-                       HBox([Label("Spectrum Settings:__________________________"),self.push_settings]),
+                       Label("Spectrum Settings: "),
                        HBox([self.center_frequency,Label("(Mhz)")]),
                        self.fft_size,
                        self.decimation_factor,
@@ -218,8 +228,9 @@ class spectrumWidgets:
                        self.mins,
                        HBox([self.frames,Label("(per sample)")]),
                        HBox([self.coordinates,Label("(Lat,Long)")]),
-                       Label("Local time:____" + str(datetime.now())),
-                       HBox([self.device_time,self.time])
+                       HBox([self.pickdate,self.picktime]), 
+                       HBox([self.device_time,self.time]),
+                       HBox([Label("To update Spectrum settings - ", indent = True),self.push_settings])
                       ],
                       layout={'border': '1px solid black'})
         
@@ -240,18 +251,13 @@ class spectrumWidgets:
         self.frames.observe(self.clear_setting_button, names='value')
         self.coordinates.observe(self.clear_setting_button, names='value')
         
-        
         # display
         display(HBox([self.L,self.out]))
         
         
-        
-        
-
-    
     def update_settings(self,b):
         self.f[b'changed'] = True
-        self.f[b'centre_frequency'] = int(int(self.center_frequency.value)*1e6)
+        self.f[b'centre_frequency'] = int(self.center_frequency.value)
         self.f[b'fft_size'] = int(self.fft_size.value)
         self.f[b'decimation_factor'] = int(self.decimation_factor.value)
         self.f[b'window'] = self.window.value
@@ -267,13 +273,14 @@ class spectrumWidgets:
         if(res):
             self.push_settings.style.button_color = 'lightgreen'
         
-    
-    
     def update_time(self,b):
         self.f[b'enable_time'] = True
-        self.f[b'date_time'] = datetime.now()
-        self.device_time.value = str(self.f[b'date_time'])
-        # possibly change variable that updates time 
+        date_time = str(self.pickdate.value)+' '+str(self.picktime.value)
+        dt = datetime.strptime(date_time, '%Y-%m-%d %H:%M')
+        self.f[b'date_time'] = dt
+        self.device_time.value = str(dt)
+        self.pickdate.value = dt.date()
+        self.picktime.value = str(dt.strftime("%H:%M"))
         res = pickleFile(self.config_Path, self.f)
         if(res):
             self.time.style.button_color = 'lightgreen'
@@ -311,7 +318,9 @@ class spectrumWidgets:
             plt.grid(True)
             plt.xlabel('Frequency [MHz]')
             plt.ylabel(self.f[b'units'])
+            plt.ylim([-140,0])
             plt.show()
+            print(str(self.pickdate.value))
         
     def update_app_enable(self,b):
         val = self.f[b'app_enable']
@@ -328,42 +337,35 @@ class spectrumWidgets:
             self.rad.value = 'idle'
             self.rad.disabled = True
             self.get_frame.disabled=True
-        
-        self.f[b'changed'] = True    
-        pickleFile(self.config_Path, self.f)
+        self.f[b'changed'] = True
 
-        
-        
-        
     def clear_setting_button(self,change):
         self.push_settings.style.button_color = 'lightblue'
-    
+        
     def update_full_scan(self,change):
         self.f[b'changed'] = True   
         self.f[b'full_spectrum_scan'] = self.full_scan.value
-        pickleFile(self.config_Path, self.f)
-    
+        
     def update_mode(self,change):
-        #with self.out2:
-        #    print(change['new'])
         if(change['new'] == 'stream data'):
             self.f[b'stream_data_enable'] = True
             self.f[b'continuous_scan_enable'] = False
+            self.f[b'single_frame_enable'] = False   # possibly true
             self.full_scan.disabled = True
             self.full_scan.value = False
             self.get_frame.disabled=True
         elif(change['new'] == 'continuous scan'):
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = True
+            self.f[b'single_frame_enable'] = False  
             self.get_frame.disabled=True
             self.full_scan.disabled = False
         else:
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = False
+            self.f[b'single_frame_enable'] = False  
             self.full_scan.value = False
             self.full_scan.disabled = True
             self.get_frame.disabled=False
-            
-        self.f[b'full_spectrum_scan'] = self.full_scan.value
-        self.f[b'changed'] = True   
-        pickleFile(self.config_Path, self.f)
+        self.f[b'changed'] = True    
+        self.clear_setting_button(change['new'])

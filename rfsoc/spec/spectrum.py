@@ -48,7 +48,7 @@ class spectrum:
         self.fs = 4096
         self.fft_size = self.rec.fft_size
         self.decimation_factor = self.rec.decimation_factor
-        self.centre_frequency = self.rec.centre_frequency
+        self.centre_frequency = self.front.centre_frequency
         self.centre_frequency_arr = [self.centre_frequency]
         self.units = self.rec.spectrum_units
         self.lower_lim = self.centre_frequency-((self.fs/self.decimation_factor)/2)
@@ -81,8 +81,8 @@ class spectrum:
         return self.mins
     
     # set coordinates
-    def set_coordinates(self,_lat, _long):
-        self.coordinates = (_lat, _long)
+    def set_coordinates(self,_coor):
+        self.coordinates = _coor
         
      # get coordinates
     def get_coordinates(self):
@@ -97,11 +97,11 @@ class spectrum:
         return self.lower_lim
     
     # set number of frames
-    def set_frame_number(self,_frames):
+    def set_frames_number(self,_frames):
         self.frames = _frames
     
     # get number of frames
-    def get_frame_number(self):
+    def get_frames_number(self):
         return self.frames
     
     # returns max hold of generate data        
@@ -135,25 +135,26 @@ class spectrum:
         self.fft_size = self.rec.fft_size
         
     # returns centre frequency 
-    def get_center_frequency(self):
+    def get_centre_frequency(self):
         if(self.sub_div):
             return self.centre_frequency_arr
         else:
             return self.centre_frequency
         
+    # set centre frequency
+    def set_centre_frequency(self, _centre_frequency):
+        self.front.centre_frequency = _centre_frequency
+        self.centre_frequency = self.front.centre_frequency
+        self.set_sub_div(False) # update subdivision
+        
     # set cdecimation factor
     def set_decimation_factor(self, _decimation_factor):
         self.front.decimation_factor = _decimation_factor
-        self.fft_size = self.rec.decimation_factor
+        self.decimation_factor = self.rec.decimation_factor
         self.set_sub_div(self.sub_div) # update subdivision
     
     def get_decimation_factor(self):
         return self.decimation_factor
-        
-    # set centre frequency
-    def set_centre_frequency(self, _centre_frequency):
-        self.front.centre_frequency = _centre_frequency
-        self.fft_size = self.rec.centre_frequency
         
     # Other functionalities
          
@@ -234,7 +235,7 @@ class spectrum:
             self.lower_lim = self.rec.centre_frequency-((self.fs*1e6)/4)
             self.upper_lim = self.rec.centre_frequency+((self.fs*1e6)/4)
         else:
-            self.centre_frequency_arr = [self.centre_frequancy]
+            self.centre_frequency_arr = [self.centre_frequency]
             self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
             self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
         
@@ -287,7 +288,17 @@ class spectrum:
     
     def continuous_scan(self):
         print("------------ CONTINUOUS ------------")
-        
+        print("|current spectrum settings:        |")
+        print("------------------------------------")
+        print("division enable   : "+ str(self.get_sub_div()))
+        print("decimation factor : "+ str(self.decimation_factor))
+        print("center_frequency  : "+ str(self.rec.centre_frequency))
+        print("cf array          : "+ str(self.centre_frequency_arr))
+        print("window type       : "+ str(self.get_window()))
+        print("fft size          : "+ str(self.fft_size))
+        print("Mins array        : "+ str(self.mins))
+        print("Upper and lower limit: "+ str(self.upper_lim) +",     " +str(self.lower_lim))
+        print("------------------------------------")
         _mins = self.mins   # times at which to run generate data
         skip_m = []
         self.time_start = datetime.now()

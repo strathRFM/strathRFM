@@ -272,6 +272,7 @@ class spectrumWidgets:
         res = pickleFile(self.config_Path, self.f)
         if(res):
             self.push_settings.style.button_color = 'lightgreen'
+            self.f[b'changed'] = False
         
     def update_time(self,b):
         self.f[b'enable_time'] = True
@@ -284,6 +285,7 @@ class spectrumWidgets:
         res = pickleFile(self.config_Path, self.f)
         if(res):
             self.time.style.button_color = 'lightgreen'
+            self.f[b'enable_time'] = False
     
     def update_frame(self,b):
         self.f[b'single_frame_enable'] = True    
@@ -293,7 +295,8 @@ class spectrumWidgets:
         #data = {'Spectrum': np.random.rand(100)}
         res, data = unpickleFile(self.data_Path)
         if(res):
-            self.live_plot(data)
+            self.live_plot(data) 
+            self.f[b'changed'] = False  
     
     
     def update_boot(self,b):
@@ -305,7 +308,9 @@ class spectrumWidgets:
             self.boot.style.button_color = 'lightblue'
         
         self.f[b'changed'] = True    
-        pickleFile(self.config_Path, self.f)
+        res = pickleFile(self.config_Path, self.f)
+        if res:
+            self.f[b'changed'] = False    
         
     get_ipython().run_line_magic('matplotlib', 'inline')
     def live_plot(self,data_dict, figsize=(8,7), title=''):
@@ -369,3 +374,4 @@ class spectrumWidgets:
             self.get_frame.disabled=False
         self.f[b'changed'] = True    
         self.clear_setting_button(change['new'])
+        

@@ -131,7 +131,7 @@ class spectrum:
         return self.fft_size
     # set fft size
     def set_fftsize(self, _fft_size):
-        self.front.fft_size = _fft_size
+        self.front.fftsize = _fft_size
         self.fft_size = self.rec.fft_size
         
     # returns centre frequency 

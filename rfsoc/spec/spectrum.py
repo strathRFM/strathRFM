@@ -45,7 +45,7 @@ class spectrum:
         self.sub_div = _sub_div
     
         # get other parameters from the spectrum analyser class
-        self.fs = 4096
+        self.fs = self.rec.sample_frequency
         self.fft_size = self.rec.fft_size
         self.decimation_factor = self.rec.decimation_factor
         self.centre_frequency = self.front.centre_frequency

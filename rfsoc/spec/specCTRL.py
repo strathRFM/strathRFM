@@ -182,6 +182,9 @@ class SpecCTRL:
         self.date_time = datetime.now()
     
     def spec_get_frame(self):
+        self.single_frame_enable = False
+        self.create_config(False)
+        time.sleep(0.1)
         data = self.spec.get_frame()
         toFile = {b'upper_lim': self.spec.get_upper_lim(),
                   b'lower_lim': self.spec.get_lower_lim(),
@@ -190,7 +193,14 @@ class SpecCTRL:
     
     def send_spec_data(self):
         while(self.stream_data_enable):
-            self.spec_get_frame()
+            if(self.frame_number == 1):
+                data = self.spec_get_frame()
+            else:
+                self.spec.generate_data()
+                data = self.spec.get_maxhold()
+            self.pickleFile(self.spec_Data_Stream_Path,toFile)
+            
+            time.sleep(0.1)
             self.check_config()
                 
         
@@ -216,10 +226,8 @@ class SpecCTRL:
                 
             if(self.single_frame_enable):
                 self.spec_get_frame()
-                self.single_frame_enable = False
-                self.create_config(False)
                 
-            #time.sleep(4)
+            
             self.check_config()
             
             print("  waiting for update "+ animation[anim_idx % len(animation)]+"      ",end="\r",flush = True)

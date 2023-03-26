@@ -90,11 +90,13 @@ class spectrum:
     
     # get upper_lim
     def get_upper_lim(self):
-        return self.upper_lim
+        self.upper_lim = self.rec.centre_frequency+((self.fs/self.rec.decimation_factor)/2)
+        return self.rec.centre_frequency+((self.fs/self.rec.decimation_factor)/2)
     
     # get lower_lim
     def get_lower_lim(self):
-        return self.lower_lim
+        self.lower_lim = self.rec.centre_frequency-((self.fs/self.rec.decimation_factor)/2)
+        return self.rec.centre_frequency-((self.fs/self.rec.decimation_factor)/2)
     
     # set number of frames
     def set_frames_number(self,_frames):
@@ -186,13 +188,12 @@ class spectrum:
     # generates max hold and time average data
     def generate_data(self):
         data = []
-        
+        print("generating data for frames: "+str(self.frames), end=" ", flush = True)
         for cf in self.centre_frequency_arr:
             self.front.centre_frequency = float(cf)
             if(self.sub_div):
-                self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
-                self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
-            # self.rec.centre_frequency = int(cf) # commented out as it should be redundant
+                self.lower_lim = self.rec.centre_frequency-((self.fs/self.rec.decimation_factor)/2)
+                self.upper_lim = self.rec.centre_frequency+((self.fs/self.rec.decimation_factor)/2)
             time.sleep(0.4)
             _data = np.add(np.zeros(self.fft_size),-200)
             for i in range(0,self.frames):
@@ -203,6 +204,7 @@ class spectrum:
             data = np.concatenate((data,_data))
             # average data temporarly not used.
         self.maxhold = data
+        print(" ", end="\r", flush = True)
    
     # returns sub-division
     def get_sub_div(self):
@@ -246,7 +248,7 @@ class spectrum:
             global_info = {
                 SigMFFile.DATATYPE_KEY: get_data_type_str(self.data),  # in this case, 'rf32_le',
                 SigMFFile.SAMPLE_RATE_KEY: self.fs,
-                SigMFFile.AUTHOR_KEY: 'RFSoC 2x2',
+                SigMFFile.AUTHOR_KEY: 'RFSoC',
                 SigMFFile.VERSION_KEY: sigmf.__version__,
                 SigMFFile.GEOLOCATION_KEY: Point((latlng)),
             }
@@ -340,7 +342,7 @@ class spectrum:
                     T = curr - int(now.strftime("%M"))
                                                         
                     # disable in boot mode
-                    print("  waiting for T-"+str(T)+" "+ animation[anim_idx % len(animation)]+"      ",end="\r",flush = True)
+                    print("  waiting for T-"+str(T)+" "+ animation[anim_idx % len(animation)]+"            ",end="\r",flush = True)
                     anim_idx += 1
                     time.sleep(0.2) # wait 0.2s animation
                     #time.sleep(60) # wait 1 min boot mode
@@ -348,6 +350,7 @@ class spectrum:
                     #if(int(now.strftime("%M")) > 3):
                     _,cont_scan = self.unpickleFile()
                     if(cont_scan == False):
+                        print("exit encountered...")
                         break
                         
                 # generate max hold for 40 frames 
@@ -355,7 +358,7 @@ class spectrum:
                 # update time variables
                 self.time_end = datetime.now()
                 # disable in boot mode    
-                print("data gathered: *"+str(self.time_end))
+                print("data gathered: *"+str(self.time_end), end="\r", fluash=True)
                 # write metadata
                 if(cont_scan == False):
                         break
@@ -370,5 +373,5 @@ class spectrum:
             os.chmod(self.fileData, 0o777)    
             self.write_metadata()
             self.time_tot = self.time_tot + 1
-            print("complete data file: " +file_time, flush=True)
+            print("complete data file: " +file_time + " total data points:" + str(self.time_tot), flush=True)
             self.maxhold = np.add(np.zeros(int(self.data_length)),-200)

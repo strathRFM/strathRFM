@@ -105,7 +105,7 @@ class SpecCTRL:
         
         if(config_file[b'changed'] == True):
             
-            print("updating settings...")
+            print("updating settings...   ")
             if(self.continuous_scan_enable != config_file[b'continuous_scan_enable']):
                 self.continuous_scan_enable = config_file[b'continuous_scan_enable']
                 print("-continuous scan:" + str(self.continuous_scan_enable))
@@ -164,8 +164,8 @@ class SpecCTRL:
                 print("-window type: " + str(self.window))
                 
             if(self.frame_number != config_file[b'frame_number']):
-                self.spec.set_frame_number(config_file[b'frame_number'])
-                self.frame_number = self.spec.get_frame_number()
+                self.spec.set_frames_number(config_file[b'frame_number'])
+                self.frame_number = self.spec.get_frames_number()
                 print("-number of frames: " + str(self.frame_number))
                 
             if(self.coordinates != config_file[b'coordinates']):
@@ -184,28 +184,39 @@ class SpecCTRL:
     def spec_get_frame(self):
         self.single_frame_enable = False
         self.create_config(False)
-        time.sleep(0.1)
-        data = self.spec.get_frame()
-        toFile = {b'upper_lim': self.spec.get_upper_lim(),
-                  b'lower_lim': self.spec.get_lower_lim(),
-                  b'data': data}
+        if(self.frame_number == 1):
+            data = self.spec.get_frame()
+            toFile = {b'upper_lim': self.spec.get_upper_lim(),
+                      b'lower_lim': self.spec.get_lower_lim(),
+                      b'data': data}
+            time.sleep(0.1)
+        else:
+            self.spec.generate_data()
+            data = self.spec.get_maxhold()
+            toFile = {b'upper_lim': self.spec.get_upper_lim(),
+                      b'lower_lim': self.spec.get_lower_lim(),
+                      b'data': data}
         self.pickleFile(self.spec_Data_Stream_Path,toFile)
     
     def send_spec_data(self):
-        while(self.stream_data_enable):
-            if(self.frame_number == 1):
-                data = self.spec_get_frame()
-            else:
-                self.spec.generate_data()
-                data = self.spec.get_maxhold()
-            self.pickleFile(self.spec_Data_Stream_Path,toFile)
-            
-            time.sleep(0.1)
-            self.check_config()
+        print("Stream-",end="",flush = True)
+        #while(self.stream_data_enable):
+        #    if(self.frame_number == 1):
+        #        self.self.spec.get_frame()
+        #        time.sleep(0.1)
+        #    else:
+        #        self.spec.generate_data()
+        #        data = self.spec.get_maxhold()
+        #        toFile = {b'upper_lim': self.spec.get_upper_lim(),
+        #                  b'lower_lim': self.spec.get_lower_lim(),
+        #                  b'data': data}
+        #        self.pickleFile(self.spec_Data_Stream_Path,toFile)
+        #        time.sleep(1)
+        #    
+        #    self.check_config()
                 
         
     def start_CTRL(self):
-        
         animation = "|/-\\" # animation to be removed if in boot mode.
         anim_idx = 0        # anim index init
         if(os.path.isfile(self.config_Path) != True):
@@ -221,7 +232,6 @@ class SpecCTRL:
                 
             if(self.stream_data_enable):
                 # send data to GUI trough stream data file.
-                print("sending data to GUI.")
                 self.send_spec_data()
                 
             if(self.single_frame_enable):
@@ -230,7 +240,7 @@ class SpecCTRL:
             
             self.check_config()
             
-            print("  waiting for update "+ animation[anim_idx % len(animation)]+"      ",end="\r",flush = True)
+            print("  waiting for update "+ animation[anim_idx % len(animation)]+"               ",end="\r",flush = True)
             anim_idx += 1
             time.sleep(0.2)
             

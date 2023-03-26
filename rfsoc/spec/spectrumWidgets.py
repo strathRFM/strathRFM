@@ -3,7 +3,7 @@
 
 """
     Author: Robert Incze
-    Date: 19/03/2023
+    Date: 26/03/2023
     Description: control class, that enables interactive editing of the config.pkl file in turn controlling the 
                 specCTRL and the spectrum analyser.
 """
@@ -184,7 +184,8 @@ class spectrumWidgets:
         self.pickdate = widgets.DatePicker(
             description='Local time:',
             disabled=False,
-            value = datetime.now().astimezone(tz=None)
+            value = datetime.now().date(),
+            indent = True
         )
         self.picktime = widgets.Text(
             disabled=False,
@@ -228,9 +229,8 @@ class spectrumWidgets:
                        self.mins,
                        HBox([self.frames,Label("(per sample)")]),
                        HBox([self.coordinates,Label("(Lat,Long)")]),
-                       HBox([self.pickdate,self.picktime]), 
-                       HBox([self.device_time,self.time]),
-                       HBox([Label("To update Spectrum settings - ", indent = True),self.push_settings])
+                       HBox([Label("To update Spectrum settings - ", indent = True),self.push_settings]),
+                       VBox([HBox([self.pickdate,self.picktime]), HBox([self.device_time,self.time])],layout={'border': '1px solid black'}),
                       ],
                       layout={'border': '1px solid black'})
         
@@ -269,6 +269,7 @@ class spectrumWidgets:
         
         list_coor = re.sub("[())]","",self.coordinates.value).split(',')
         self.f[b'coordinates'] = (int(list_coor[0]),int(list_coor[1]))
+        self.f[b'single_frame_enable'] = False
         res = pickleFile(self.config_Path, self.f)
         if(res):
             self.push_settings.style.button_color = 'lightgreen'
@@ -282,6 +283,7 @@ class spectrumWidgets:
         self.device_time.value = str(dt)
         self.pickdate.value = dt.date()
         self.picktime.value = str(dt.strftime("%H:%M"))
+        self.f[b'single_frame_enable'] = False
         res = pickleFile(self.config_Path, self.f)
         if(res):
             self.time.style.button_color = 'lightgreen'
@@ -290,9 +292,11 @@ class spectrumWidgets:
     def update_frame(self,b):
         self.f[b'single_frame_enable'] = True    
         self.f[b'changed'] = True  
-        pickleFile(self.config_Path, self.f)
-        time.sleep(0.3)
-        #data = {'Spectrum': np.random.rand(100)}
+        res = pickleFile(self.config_Path, self.f)
+        if res:
+            self.f[b'single_frame_enable'] = False   
+            
+        time.sleep(0.2*int(self.frames.value))
         res, data = unpickleFile(self.data_Path)
         if(res):
             self.live_plot(data) 
@@ -307,7 +311,7 @@ class spectrumWidgets:
         else:
             self.boot.style.button_color = 'lightblue'
         
-        self.f[b'changed'] = True    
+        self.f[b'single_frame_enable'] = False    
         res = pickleFile(self.config_Path, self.f)
         if res:
             self.f[b'changed'] = False    
@@ -325,7 +329,10 @@ class spectrumWidgets:
             plt.ylabel(self.f[b'units'])
             plt.ylim([-140,0])
             plt.show()
-            print(str(self.pickdate.value))
+            print("Upper limit     (Hz): "+str(data_dict[b'upper_lim']))
+            print("Lower limit     (Hz): "+str(data_dict[b'lower_lim']))
+            print("Plot resolution (Hz): "+str((data_dict[b'upper_lim'] - data_dict[b'lower_lim'])/len(data_dict[b'data'])))
+            print("time                : "+str(datetime.now()))
         
     def update_app_enable(self,b):
         val = self.f[b'app_enable']
@@ -355,16 +362,46 @@ class spectrumWidgets:
         if(change['new'] == 'stream data'):
             self.f[b'stream_data_enable'] = True
             self.f[b'continuous_scan_enable'] = False
-            self.f[b'single_frame_enable'] = False   # possibly true
+            self.f[b'single_frame_enable'] = False
             self.full_scan.disabled = True
             self.full_scan.value = False
+            
+            # disable all spectrum settings
             self.get_frame.disabled=True
+            self.center_frequency.disabled = True
+            self.mins.disabled = True
+            self.fft_size.disabled = True
+            self.decimation_factor.disabled = True
+            self.window.disabled = True
+            self.units.disabled = True
+            self.frames.disabled = True
+            self.coordinates.disabled = True
+            self.device_time.disabled = True
+            self.time.disabled = True
+            self.pickdate.disabled = True
+            self.picktime.disabled = True
+            
+            
         elif(change['new'] == 'continuous scan'):
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = True
             self.f[b'single_frame_enable'] = False  
-            self.get_frame.disabled=True
             self.full_scan.disabled = False
+            
+            # disable all spectrum settings
+            self.get_frame.disabled=True
+            self.center_frequency.disabled = True
+            self.mins.disabled = True
+            self.fft_size.disabled = True
+            self.decimation_factor.disabled = True
+            self.window.disabled = True
+            self.units.disabled = True
+            self.frames.disabled = True
+            self.coordinates.disabled = True
+            self.device_time.disabled = True
+            self.time.disabled = True
+            self.pickdate.disabled = True
+            self.picktime.disabled = True
         else:
             self.f[b'stream_data_enable'] = False
             self.f[b'continuous_scan_enable'] = False
@@ -372,6 +409,22 @@ class spectrumWidgets:
             self.full_scan.value = False
             self.full_scan.disabled = True
             self.get_frame.disabled=False
+            
+            # enable spectrum settings
+            self.center_frequency.disabled = False
+            self.mins.disabled = False
+            self.fft_size.disabled = False
+            self.decimation_factor.disabled = False
+            self.window.disabled = False
+            self.units.disabled = False
+            self.frames.disabled = False
+            self.coordinates.disabled = False
+            self.device_time.disabled = False
+            self.time.disabled = False
+            self.pickdate.disabled = False
+            self.picktime.disabled = False
+            
+            
         self.f[b'changed'] = True    
         self.clear_setting_button(change['new'])
         

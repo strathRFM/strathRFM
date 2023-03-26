@@ -268,7 +268,7 @@ class spectrumWidgets:
         self.f[b'frame_number'] = int(self.frames.value)
         
         list_coor = re.sub("[())]","",self.coordinates.value).split(',')
-        self.f[b'coordinates'] = (int(list_coor[0]),int(list_coor[1]))
+        self.f[b'coordinates'] = (float(list_coor[0]),float(list_coor[1]))
         self.f[b'single_frame_enable'] = False
         res = pickleFile(self.config_Path, self.f)
         if(res):

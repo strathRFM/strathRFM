@@ -234,12 +234,12 @@ class spectrum:
             # fft size to cover the whole spectrum 0 - 2 GHz.
             cf_arr = np.arange(rate,self.fft_size-1,2*rate)/2
             self.centre_frequency_arr = [int(i) for i in cf_arr]
-            self.lower_lim = self.rec.centre_frequency-((self.fs*1e6)/4)
-            self.upper_lim = self.rec.centre_frequency+((self.fs*1e6)/4)
+            self.lower_lim = self.rec.centre_frequency-((self.fs)/4)
+            self.upper_lim = self.rec.centre_frequency+((self.fs)/4)
         else:
             self.centre_frequency_arr = [self.centre_frequency]
-            self.lower_lim = self.rec.centre_frequency-(((self.fs*1e6)/self.rec.decimation_factor)/2)
-            self.upper_lim = self.rec.centre_frequency+(((self.fs*1e6)/self.rec.decimation_factor)/2)
+            self.lower_lim = self.rec.centre_frequency-(((self.fs)/self.rec.decimation_factor)/2)
+            self.upper_lim = self.rec.centre_frequency+(((self.fs)/self.rec.decimation_factor)/2)
         
     def write_metadata(self):
         latlng = self.coordinates
@@ -358,7 +358,7 @@ class spectrum:
                 # update time variables
                 self.time_end = datetime.now()
                 # disable in boot mode    
-                print("data gathered: *"+str(self.time_end), end="\r", fluash=True)
+                print("data gathered: *"+str(self.time_end), end="\r", flush=True)
                 # write metadata
                 if(cont_scan == False):
                         break

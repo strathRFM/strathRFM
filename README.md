@@ -36,4 +36,11 @@ RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
 
-pip install pyrtlsdr
+**pip install pyrtlsdr**
+
+Once downloaded the python package requires some dependices called librtlsdr, to work correctly. The package can be accessed from here https://github.com/librtlsdr/librtlsdr/releases. 
+We used **rtlsdr-bin-w64_dlldep.zip** package.
+
+![image](https://user-images.githubusercontent.com/99476167/229078556-f01f6f8b-6f58-440d-9356-2a92506e1988.png)
+
+Extract the zip and save it within a working directory. We commonly used our C drive.

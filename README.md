@@ -31,3 +31,9 @@ pip3 install hhtps://git+strathRFM/strathRFM
 windows:
 
 download exe or compile source code in the GUI folder
+
+RTL-SDR:
+
+To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
+
+pip install pyrtlsdr

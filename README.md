@@ -43,9 +43,9 @@ We used **rtlsdr-bin-w64_dlldep.zip** package.
 
 ![image](https://user-images.githubusercontent.com/99476167/229078556-f01f6f8b-6f58-440d-9356-2a92506e1988.png)
 
-Extract the zip and save it within a working directory. We commonly used our C drive. The next step is to find the Python program files within your computer system. The file location can be found by using the following directory:
+Extract the zip and save it within a working directory. We commonly used our C drive. The next step is to find the Python program files within your computer system. The file location can be found by using the following file path:
 
-C:\Users\44750\AppData\Local\Programs\Python\Python39\Lib\site-packages\rtlsdr
+**C:\Users\44750\AppData\Local\Programs\Python\Python39\Lib\site-packages\rtlsdr**
 
 Locate the file 'librtlsdr.py' and modify as shown below:
 

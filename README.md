@@ -43,4 +43,12 @@ We used **rtlsdr-bin-w64_dlldep.zip** package.
 
 ![image](https://user-images.githubusercontent.com/99476167/229078556-f01f6f8b-6f58-440d-9356-2a92506e1988.png)
 
-Extract the zip and save it within a working directory. We commonly used our C drive.
+Extract the zip and save it within a working directory. We commonly used our C drive. The next step is to find the Python program files within your computer system. The file location can be found by using the following directory:
+
+C:\Users\44750\AppData\Local\Programs\Python\Python39\Lib\site-packages\rtlsdr
+
+Locate the file 'librtlsdr.py' and modify as shown below:
+
+![image](https://user-images.githubusercontent.com/99476167/229480270-fe2a1ea1-52e6-4349-bbe3-5dd770f18e2a.png)
+
+Save the file and run a basic script with the RTL-SDR to check the driver was installed correctly.

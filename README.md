@@ -8,16 +8,12 @@ to install strathRFM you can open a new terminal in JupyterLab and paste in the 
 ----------------------------------------------------------------------
 
 mkdir /home/xilinx/jupyter_notebooks/strathRFM
-
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
-
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb /home/xilinx/jupyter_notebooks/strathRFM/Notebook_CTRL.ipynb
-
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py /home/xilinx/jupyter_notebooks/strathRFM/spectrum.py
-
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
-
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrumWidgets.py /home/xilinx/jupyter_notebooks/spectrumWidgets.py
+cd /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrumWidgets.py
 
 ----------------------------------------------------------------------
 

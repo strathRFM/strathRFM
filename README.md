@@ -9,15 +9,14 @@ The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZC1111
 bla bla bla and bla
 
 ## install
-## Linux: 
+# Linux: 
 
 copy and panste use python command
 
-## rfsoc:
+# rfsoc:
 
 to install strathRFM you can open a new terminal in JupyterLab and paste in the following commands and hit enter
 
-----------------------------------------------------------------------
 ```
 mkdir /home/xilinx/jupyter_notebooks/strathRFM
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
@@ -30,7 +29,6 @@ cd /boot
 rm boot.py
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/Other/boot.py
 ```
-----------------------------------------------------------------------
 doing so the rfsoc will create the necessary folders and download the files from github. Once complete, you can navigate to StrathRFM and run the Provided notebook 
 or alternatively use the provided GUI to control strathRFM.
 
@@ -38,11 +36,11 @@ or alternatively use the provided GUI to control strathRFM.
 
 
 
-## windows:
+# windows:
 
 download exe or compile source code in the GUI folder
 
-## RTL-SDR:
+# RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
 

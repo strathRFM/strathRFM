@@ -1,18 +1,27 @@
 ![screenshot](logo.png?raw=true)
-# strath Radio Frequency Mapping
+## strath Radio Frequency Mapping
 
-Description:
+# Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.
 
-The currently supported devices are:
+to install strathRFM you can open a new terminal in JupyterLab and paste in the following code and hit enter
+----------------------------------------------------------------------
 
-rtl-sdr
+mkdir /home/xilinx/jupyter_notebooks/strathRFM
 
-rfsoc 2x2
+mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
 
-rfsoc 4x2
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb /home/xilinx/jupyter_notebooks/strathRFM/Notebook_CTRL.ipynb
 
-z111111111111111111111111111
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py /home/xilinx/jupyter_notebooks/strathRFM/spectrum.py
+
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
+
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrumWidgets.py /home/xilinx/jupyter_notebooks/spectrumWidgets.py
+
+----------------------------------------------------------------------
+
+The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZC1111
 
 bla bla bla and bla
 

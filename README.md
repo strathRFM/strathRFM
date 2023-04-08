@@ -4,7 +4,19 @@
 # Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.
 
+The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZC1111
+
+bla bla bla and bla
+
+## install
+## Linux: 
+
+copy and panste use python command
+
+## rfsoc:
+
 to install strathRFM you can open a new terminal in JupyterLab and paste in the following commands and hit enter
+
 ----------------------------------------------------------------------
 
 mkdir /home/xilinx/jupyter_notebooks/strathRFM
@@ -32,27 +44,14 @@ doing so the rfsoc will create the necessary folders and download the files from
 or alternatively use the provided GUI to control strathRFM.
 
 
-The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZC1111
-
-bla bla bla and bla
-
-## install
-Linux: 
-
-copy and panste use python command
-
-rfsoc:
-
-open jupiter notebook terminal
-
-pip3 install hhtps://git+strathRFM/strathRFM
 
 
-windows:
+
+## windows:
 
 download exe or compile source code in the GUI folder
 
-RTL-SDR:
+## RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
 

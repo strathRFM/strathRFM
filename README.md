@@ -8,15 +8,20 @@ The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZC1111
 
 bla bla bla and bla
 
-## install
-# Linux: 
+# install
+## Linux: 
 
 copy and panste use python command
 
-# rfsoc:
+## rfsoc:
 
-to install strathRFM you can open a new terminal in JupyterLab and paste in the following commands and hit enter
-
+This project requires the sigmf and geojson libraries to be installed on the device. To do so, power on the RFSoC device, connect an ethernet cable and 
+finally connect to jupyterLab using a browser of your choice (192/168/3/1 password: xilinx). Once connected open a new terminal and run the following commands
+```
+pip install sigmf geojson
+```
+This will install the libraries. To install strathRFM the following commands can be pasted or typed into the console and run. This will download all the 
+necessary files onto the correct location that are required to be.
 ```
 mkdir /home/xilinx/jupyter_notebooks/strathRFM
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
@@ -36,16 +41,16 @@ or alternatively use the provided GUI to control strathRFM.
 
 
 
-# windows:
+## windows:
 
 download exe or compile source code in the GUI folder
 
-# RTL-SDR:
+## RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
-
-**pip install pyrtlsdr**
-
+```
+pip install pyrtlsdr
+```
 Once downloaded the python package requires some dependices called librtlsdr, to work correctly. The package can be accessed from here https://github.com/librtlsdr/librtlsdr/releases. 
 We used **rtlsdr-bin-w64_dlldep.zip** package.
 

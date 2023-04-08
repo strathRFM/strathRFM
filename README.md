@@ -34,9 +34,11 @@ cd /boot
 rm boot.py
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/Other/boot.py
 ```
-doing so the rfsoc will create the necessary folders and download the files from github. Once complete, you can navigate to StrathRFM and run the Provided notebook 
-or alternatively use the provided GUI to control strathRFM.
-
+Once complete, the **specCTRL.py** can be run from the terminal as follows:
+```
+python /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
+```
+This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM**) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation.
 
 
 

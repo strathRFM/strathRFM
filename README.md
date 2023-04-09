@@ -14,6 +14,7 @@ bla bla bla and bla
 copy and panste use python command
 
 ## rfsoc:
+Please also see [rfsoc_same](https://github.com/strath-sdr/rfsoc_sam), [SigMF](https://github.com/sigmf/SigMF) for detailed info of libraries used.
 
 This project requires the sigmf and geojson libraries to be installed on the device. To do so, power on the RFSoC device, connect an ethernet cable and 
 finally connect to jupyterLab using a browser of your choice (192/168/3/1 password: xilinx). Once connected open a new terminal and run the following commands
@@ -38,7 +39,7 @@ Once complete, the **specCTRL.py** can be run from the terminal as follows:
 ```
 python /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
 ```
-This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM**) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation.
+This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation.
 
 
 

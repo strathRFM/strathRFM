@@ -2,17 +2,24 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.font as tkFont
 import tkintermapview
+import tempfile
+import shutil
 import matplotlib
+import pandas as pd
+from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
+import scipy
 import numpy as np
 matplotlib.use("TkAgg")#if changing back end
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg #canvas and toolbar to use as objects
+from matplotlib import cm
 
 #will need to edit the toolbar later (or get rid of it)
 from matplotlib.figure import Figure
 import SweepClassEilidh as sw
 from readData import getSigmfData
 import os
+import analysis_GUI
 #window->frames->widgets structure
 
 class MainWindow(tk.Tk):
@@ -66,6 +73,7 @@ class MainWindow(tk.Tk):
                                   self.tab1.MeasurementList.measurements[ID].freq_stop,
                                   self.tab1.MeasurementList.measurements[ID].num_samples)
             self.refresh_map(lat,long)
+            self.tab4.binarised_data(self.tab1.MeasurementList.measurements[ID].path,self.tab1.MeasurementList.measurements[ID])
         
     
     def refresh_spectrum(self,data,freq_start,freq_stop,num_samples):
@@ -73,6 +81,10 @@ class MainWindow(tk.Tk):
         
     def refresh_map(self,latitude,longitude):
         self.tab2.map.refresh_coordinates(latitude,longitude)
+        
+    def on_closing(self):
+        dataset_dir.cleanup()
+        self.destroy()
         
         
 class MeasurementTab(tk.Frame):
@@ -87,7 +99,6 @@ class MeasurementTab(tk.Frame):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
         self.grid_rowconfigure(1,weight=1)
-        
     def fileDialog(self):
         pass
         
@@ -104,13 +115,9 @@ class MapTab(tk.Frame):
         self.map = Map(self)
         self.map.pack(fill='both')
         
-      
+    def make_polygon(self,c):
 
-class AnaylsisTab(tk.Frame):
-    def __init__(self, parent):
-        tk.Frame.__init__(self,parent)
-        self.parent = parent
-        
+        polygon_1 = self.map.mapwidget.set_polygon(c)
 
 class Spectrum(tk.Frame):
     
@@ -191,7 +198,9 @@ class MeasurementList(tk.Frame): #tree widget for listing measurements and prope
             for filename in files:
                 if filename.endswith(".sigmf-data"):
                     samples, metadata = getSigmfData(filename)
-                    newMeasurement = Measurement(samples,metadata,self.idMeasurements)
+                    fulldir=directory+'/'+filename
+                    fulldir_meta = fulldir.replace(".sigmf-data",".sigmf-meta")
+                    newMeasurement = Measurement(samples,metadata,self.idMeasurements, fulldir)
                     self.tree.insert('', tk.END, iid = newMeasurement.id,
                                      text = newMeasurement.time,
                                      values = (newMeasurement.date,str(newMeasurement.latitude)+', '+str(newMeasurement.longitude),
@@ -201,13 +210,20 @@ class MeasurementList(tk.Frame): #tree widget for listing measurements and prope
                                        self.make_lambda(newMeasurement.id,newMeasurement.latitude,newMeasurement.longitude))
                     self.measurements.append(newMeasurement)
                     self.idMeasurements=self.idMeasurements+1
-                                         
+                    shutil.copy(fulldir,dataset_dir)
+                    shutil.copy(fulldir_meta,dataset_dir)
+                    print(newMeasurement.num_samples)
+        self.parent.parent.tab4.analyse_dataset()
+        coords = self.list_coordinates()
+        self.parent.parent.tab2.make_polygon(coords)
         
         
     def make_lambda(self, idd, lat, long):
         return lambda event: self.parent.parent.callback(idd,lat,long)#workaround for lambda function getting overwritten in loops
         
     def clearMeasurement(self):
+        print(self.tree.focus())
+        
         self.tree.delete(self.tree.selection())
         self.parent.parent.callback(-1,0,0) #clear spectrum
     
@@ -227,25 +243,134 @@ class MeasurementList(tk.Frame): #tree widget for listing measurements and prope
         
         #will add a dialog here specifying for how long to measure - need to update sweepclass to accocunt for this
         #add indiciation that measuring is happening and option to interrupt
+    def list_coordinates(self):
+        coords = []
+        for measurement in self.measurements:
+            coord = measurement.latitude,measurement.longitude
+            coords.append(coord)
+        return coords
         
         
 class AnalysisTab(tk.Frame):
     def __init__(self, parent):
-        #placeholder - things to put: bandwidth, occupied%,unoccupied%,  ??
         tk.Frame.__init__(self,parent)
         self.parent = parent
-        self.bandwidth = 2
-        self.occupied = 0
-        self.unoccupied = 100
-        self.text = tk.Text(self,height=100,width=100)
-        text1 = "Placeholder"
-        self.text.insert(tk.END,text1)
-        self.text.pack()
+        self.f1 = Figure(figsize=(10,5), dpi=100)
+        self.fig1 = self.f1.add_subplot(111)
+        self.fig1.plot([1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8])
+                                                    
+        self.canvas = FigureCanvasTkAgg(self.f1, self)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().grid(row=0,column=0)
         
+        self.f2 = Figure(figsize=(10,5), dpi=100)
+        self.fig2 = self.f2.add_subplot(111)
+        self.fig2.plot([1,2,3,4,5,6,7,1],[1,2,3,4,5,6,7,8])
+                                                    
+        self.canvas2 = FigureCanvasTkAgg(self.f2, self)
+        self.canvas2.draw()
+        self.canvas2.get_tk_widget().grid(row=0,column=1)
+        
+        self.f3 = Figure(figsize=(10,5), dpi=100)
+        self.fig3 = self.f3.add_subplot(111)
+        self.fig3.plot([1,2,3,4,5,6,7,1],[1,2,3,4,5,6,7,8])
+                                                    
+        self.canvas3 = FigureCanvasTkAgg(self.f3, self)
+        self.canvas3.draw()
+        self.canvas3.get_tk_widget().grid(row=1,column=0)
+        
+        
+        self.f4 = Figure(figsize=(10,5), dpi=100)
+        self.fig4 = self.f4.add_subplot(111, projection = '3d')
+        self.fig4.plot([1,2,3,4,5,6,7,1],[1,2,3,4,5,6,7,8])
+                                                    
+        self.canvas4 = FigureCanvasTkAgg(self.f4, self)
+        self.canvas4.draw()
+        self.canvas4.get_tk_widget().grid(row=1,column=1)
+        
+        
+    
+    def analyse_dataset(self):
+        self.an = analysis_GUI.analysis(_samples_to_average = 5, _dir_path = dataset_dir)
+        self.an.get_dataset_files()
+        self.plot_bin_dataset(self.parent.tab1.MeasurementList.measurements[0]) # grab a sample measurement to initialise
+        self.plot_freqtime(self.parent.tab1.MeasurementList.measurements[0])
+        self.plot3D(dec_to= 256, ssample = 0, esample = 23, mode = 'inline', Measurement = self.parent.tab1.MeasurementList.measurements[0])
                 
+    def binarised_data(self,path,Measurement):
+        self.an.setSigmfData(path)
+        self.an.get_threshold(5)
+        self.an.binarize()
+        bin_data = self.an.bin_data
+        freq_axis = np.linspace(Measurement.freq_start, Measurement.freq_stop, Measurement.num_samples)	#restructure, code reuse
+        self.fig1.clear()
+        self.fig1.plot(freq_axis,Measurement.data, label='Spectrum')
+        self.fig1.plot(freq_axis,self.an.threshold, label='thresh')
+        self.fig1.plot(freq_axis,bin_data, label='binary data')
+        self.fig1.set_xlabel('frequency')
+        self.fig1.set_ylabel('binary on / off')
+        self.fig1.set_title("My Plot")
+        self.fig1.legend()
+        self.canvas.draw()
+        
+    def plot_bin_dataset(self,Measurement):
+        print(self.an.filepaths[0])
+        self.an.get_dataset()
+        self.an.binarize_dataset()
+        p = np.sum(self.an.bin_dataset,axis=0)/len(self.an.bin_dataset[:,1])
+        freq_axis = np.linspace(Measurement.freq_start, Measurement.freq_stop, Measurement.num_samples)
+        self.fig2.clear()
+        self.fig2.plot(freq_axis,p) #
+        self.fig2.set_xlabel('frequency')
+        self.fig2.set_ylabel('percentage')
+        self.fig2.set_title("Usage per frequencies")
+        self.canvas2.draw()
+        print("overall percentage: "+str(sum(p)/len(p)))
+        
+    def plot_freqtime(self, Measurement):		##MAKE THIS ADJUSTABLE
+        self.an.get_dataset()
+        #df = pd.DataFrame({'data': self.an.raw_dataset[:,1750]})
+        data = self.an.raw_dataset[4,:]
+        freq_axis = np.linspace(Measurement.freq_start, Measurement.freq_stop, Measurement.num_samples)
+        self.fig3.clear()
+        self.fig3.plot(np.arange(150,841,1),data[150:841])
+        self.fig3.set_xlabel('samples time [hrs]')
+        self.fig3.set_ylabel('Magnitude')
+        self.fig3.set_title("Observed frequency : "+str(freq_axis[1750]/1e6)+" MHz")
+        self.canvas3.draw()
+        
+    def plot3D(self, dec_to= 256, ssample = 0, esample = 23, mode = 'inline', Measurement = []):
+        k = int(len(self.an.raw_dataset[1,:])/dec_to)
+        data = scipy.signal.decimate(self.an.raw_dataset,k,axis = 1)
+        z = data[ssample:esample,:]
+        
+        print("data shape to plot = "+str(data.shape))
+        nrows, ncols = z.shape
+        x = np.linspace(Measurement.freq_start, Measurement.freq_stop, ncols)
+        y = np.linspace(ssample, esample, nrows)
+        x, y = np.meshgrid(x, y)
+
+
+        self.fig4.clear()
+        #self.canvas4.rcParams['figure.figsize'] = [12, 12]
+        #self.canvas4.rcParams['figure.dpi'] = 100 # 200 e.g. is really fine, but slower
+        #self.fig4.set_title(" Dataset from samples "+str(ssample)+ " to " +str(esample))
+        ls = LightSource(270, 45)
+
+        
+        # To use a custom hillshading mode, override the built-in shading and pass
+        # in the rgb colors of the shaded surface calculated from "shade".
+        rgb = ls.shade(z, cmap=cm.gist_earth, vert_exag=0.1, blend_mode='soft')
+        
+        surf = self.fig4.plot_surface(x, y, z, rstride=1, cstride=1, facecolors=rgb,
+                                   linewidth=0, antialiased=False, shade=False)
+        self.fig4.set_xlabel("Frequency [MHz]")
+        self.fig4.set_ylabel("samples [n]")
+        self.fig4.set_zlabel("Magnnitude [dBFS]")
+        self.canvas4.draw()
 
 class Measurement(object): 	#store info for linking between treeview/map/analysis
-    def __init__(self, samples, metadata,id):
+    def __init__(self, samples, metadata, id, path):
     #will need to add failsafes for formatting etc
         self.freq_start = samples[b'lower_lim']
         self.freq_stop = samples[b'upper_lim']
@@ -255,6 +380,7 @@ class Measurement(object): 	#store info for linking between treeview/map/analysi
         self.device = metadata['device']
         self.coord = metadata['geolocation']['coordinates']
         self.datetime = metadata['datetime']
+        self.path = path
         self.unpack()
         
     def unpack(self):
@@ -271,7 +397,7 @@ class Map(tk.Frame):
         self.mapwidget = tkintermapview.TkinterMapView(self,width=800,height=800) #might need to read from display size
         #self.mapwidget.set_position(55.86, -4.21)
         self.mapwidget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
-        self.mapwidget.set_position(55.86152790155066, -4.246978736010148)
+        self.mapwidget.set_position(55.86152790155066, -4.246978736010148)	#default position
         self.mapwidget.pack()
         
     def refresh_coordinates(self,lat,long):
@@ -286,10 +412,11 @@ class LiveViewTab(tk.Frame):
         #to be completed
         
         
-            
 
 
-window = MainWindow(); #window instance
-width, height = window.winfo_screenwidth()/2, window.winfo_screenheight()-200
-window.geometry('%dx%d+0+0' % (width,height))
-window.mainloop();
+with tempfile.TemporaryDirectory() as dataset_dir:
+    window = MainWindow(); #window instance
+    width, height = window.winfo_screenwidth()/2, window.winfo_screenheight()-200
+    window.geometry('%dx%d+0+0' % (width,height))
+    window.protocol("WM_DELETE_WINDOW", window.on_closing)
+    window.mainloop();

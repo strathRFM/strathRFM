@@ -16,7 +16,7 @@ from matplotlib import cm
 
 #will need to edit the toolbar later (or get rid of it)
 from matplotlib.figure import Figure
-import SweepClassEilidh as sw
+import SweepClass as sw
 from readData import getSigmfData
 import os
 import analysis_GUI

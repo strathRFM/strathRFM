@@ -52,6 +52,23 @@ chmod -R 777 strathRFM
 
 download exe or compile source code in the GUI folder
 
+### Live View RFSoC
+
+For more immersive live spectrum analyser experience, the samba interface must be adapted to update as soon as possible. To do so the samba configuration file must be changed. This can be achieved trough the Jupyter Notebooks terminal within the JupyterLab as follows:
+First lets open the samba configuration file:
+```
+sudo vi /etc/samba/smb.conf
+```
+This will open the editor now you can navigate down and under globals section and press insert which will allow the file editing, insert the following command
+```
+oplocks = False
+```
+To save the changes first press 'ESC' button and 'ZZ' shift+z twice. At this point it will exit vim and the RFSoC can be restarted using
+```
+sudo reboot now
+```
+Once the system has restarted the changes have taken effect and the samba drive will be updated in real time.
+
 ## RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:

@@ -19,7 +19,7 @@ from matplotlib import cm
 #will need to edit the toolbar later (or get rid of it)
 from matplotlib.figure import Figure
 #import SweepClass as sw
-from readData import getSigmfData
+#from readData import getSigmfData
 import os
 import analysis_GUI
 #window->frames->widgets structure
@@ -34,7 +34,7 @@ class MainWindow(tk.Tk):
         
         #instantiate frames and place in window
         self.tab1 = MeasurementTab(self)
-        #self.tab2 = MapTab (self)
+        self.tab2 = MapTab(self)
         self.tab3 = LiveViewTab(self)
         self.tab4 = AnalysisTab(self)
         
@@ -42,7 +42,7 @@ class MainWindow(tk.Tk):
         
         
         tabControl.add(self.tab1, text ='Measurements')
-        #tabControl.add(self.frame2, text ='Tab 2')
+        tabControl.add(self.frame2, text ='Tab 2')
         tabControl.pack(expand = 1, fill ="both")
         
         tabControl.add(self.tab2, text ='Map')
@@ -60,10 +60,10 @@ class MainWindow(tk.Tk):
         self.filemenu.add_command(label="Open", command=self.refresh_spectrum)
         self.config(menu=self.menubar)
         
-#         self.frame1.grid(row=0, column=0, sticky="nsew")
-#         self.frame2.grid(row=1,column=0, sticky="nsew")
-#         self.frame3.grid(row=0, column=1, sticky="nsew")
-#         self.frame4.grid(row=1, column=1, sticky="nsew")
+        self.frame1.grid(row=0, column=0, sticky="nsew")
+        self.frame2.grid(row=1,column=0, sticky="nsew")
+        self.frame3.grid(row=0, column=1, sticky="nsew")
+        self.frame4.grid(row=1, column=1, sticky="nsew")
 #         
         
     def callback(self, ID, lat, long, event=None):	#update windows
@@ -240,7 +240,7 @@ class MeasurementList(tk.Frame): #tree widget for listing measurements and prope
         sweeprun = sw.sweep(25e6,1750e6,'max')
         sweeprun.capture()
         sweeprun.writeNew(filename)
-        sweepRun.writeMeta(location) #change to desired postcode
+        #sweepRun.writeMeta(location) #change to desired postcode
         
         #will add a dialog here specifying for how long to measure - need to update sweepclass to accocunt for this
         #add indiciation that measuring is happening and option to interrupt
@@ -449,24 +449,27 @@ class LiveViewTab(tk.Frame):
                 res = False
         return res
     
+    # you can change parameters while in idle mode to
+    # change the spectrum analyser settings
+    # refere to spectrumWidgets on how to get rfsoc CTRL.
     def create_config(self,_changed):
-        config_file = {b'changed':_changed,
-                      b'status': self.status,
-                      b'continuous_scan_enable': self.continuous_scan_enable,
-                      b'mins':self.mins,
-                      b'single_frame_enable':self.single_frame_enable,
-                      b'start_on_boot': self.start_on_boot,
-                      b'full_spectrum_scan':self.full_spectrum_scan,
-                      b'app_enable':self.app_enable,
-                      b'fft_size':self.fft_size,
-                      b'centre_frequency':self.centre_frequency,
-                      b'decimation_factor':self.decimation_factor,
-                      b'units': self.units,
-                      b'window':self.window,
-                      b'frame_number':self.frame_number,
-                      b'coordinates':self.coordinates,
-                      b'enable_time':self.enable_time,
-                      b'date_time':self.date_time}
+        config_file = {b'changed':_changed,                                     # bool to show that spectrum settings were changed
+                      b'status': self.status,                                   # string for specCTRL status
+                      b'continuous_scan_enable': self.continuous_scan_enable,   # bool dataset generation
+                      b'mins':self.mins,                                        # array of incremental number up to 59 [0,15,...,59]
+                      b'single_frame_enable':self.single_frame_enable,          # bool - get a frame
+                      b'start_on_boot': self.start_on_boot,                     # bool - initialise on boot
+                      b'full_spectrum_scan':self.full_spectrum_scan,            # bool - if continuous scan enable scan full spectrum
+                      b'app_enable':self.app_enable,                            # bool - enable specCTRL loop
+                      b'fft_size':self.fft_size,                                # int powers of 2
+                      b'centre_frequency':self.centre_frequency,                # int defalt 1024 (MHz)
+                      b'decimation_factor':self.decimation_factor,              # int powers of 2
+                      b'units': self.units,                                     # str 'dBm' or 'dBFS' 
+                      b'window':self.window,                                    # string window type check list
+                      b'frame_number':self.frame_number,                        # int >= 1
+                      b'coordinates':self.coordinates,                          # tuple (lat, long)
+                      b'enable_time':self.enable_time,                          # bool to set time on device
+                      b'date_time':self.date_time}                              # datetime format
         res = self.pickleFile(self.config_Path, config_file)
         
     def stream_data(self):
@@ -477,14 +480,19 @@ class LiveViewTab(tk.Frame):
             self.pickleFile(self.config_path, self.config)
             self.config[b'single_frame_enable'] = False
             self.config[b'changed'] = False
-            time.sleep(0.1)
+            time.sleep(0.2)
             result, self.data = self.unpickleFile(self.data_path)
+            
+            _,  self.config = self.unpickleFile(self.config_path)
             if result:
-                print(self.data)
+                print(len(self.data[b'data']))
+                # data has lower lim upper lim and data you can get length using ^^
+                print(self.data[b'data'][0])
+                print(self.config[b'status'])
             else:
                 print("shit")
                 
-            time.sleep(2)
+            time.sleep(0.2)
         
 
 

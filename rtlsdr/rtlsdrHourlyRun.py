@@ -3,8 +3,8 @@ import schedule
 import time
 import os
 
-folder = "FalkirkTest"
-location = "FK2 9EB"
+folder = "MearnsTestNew"
+location = "G77 5JU"
 
 sweepRun = sweep(25e6, 1750e6, 'max')
 sweepRun.capture()

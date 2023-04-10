@@ -6,7 +6,8 @@ import os
 
 # Load a dataset
 #filename = 'MearnsTest/S_12-03-23_16.sigmf-data' # extension is optional
-folder = 'C:\\Users\\eilid\\mengsdr\\RFSoC\\Troon spectrum data'
+#folder = 'C:\\Users\\eilid\\mengsdr\\RFSoC\\Troon spectrum data'
+folder = 'C:\\Users\\eilid\\strathRFM\\rtlsdr\\TestWithDC'
 
 
 def getSigmfData(filename):

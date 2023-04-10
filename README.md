@@ -55,11 +55,11 @@ download exe or compile source code in the GUI folder
 ### Live View RFSoC
 
 For more immersive live spectrum analyser experience, the samba interface must be adapted to update as soon as possible. To do so the samba configuration file must be changed. This can be achieved trough the Jupyter Notebooks terminal within the JupyterLab as follows:
-* First lets open the samba configuration file:
+First lets open the samba configuration file:
 ```
 sudo vi /etc/samba/smb.conf
 ```
-* This will open the editor now you can navigate down and under globals section and press insert which will allow the file editing, insert the following command
+This will open the editor now you can navigate down and under globals section and press insert which will allow the file editing, insert the following command
 ```
 oplocks = False
 ```

@@ -12,10 +12,10 @@ for file in files:
     year = file.split("_")[1].split("-")[2]
     tt = file.split("_")[2].split(".")[0]
 
-    new_filename = "S_{}-{}-{}_{}.sigmf-data".format(year, month, day, tt)
+    new_filename = "S_{}-{}-{}_{}.sigmf-meta".format(year, month, day, tt)
 
     new_file_path = file.replace(os.path.basename(file), new_filename)
-
-    os.rename(file, new_file_path)
+    if(file != new_file_path):
+        os.rename(file, new_file_path)
 
     print("Renamed {} to {}".format(file, new_file_path))

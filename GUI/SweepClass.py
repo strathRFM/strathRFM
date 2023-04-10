@@ -53,7 +53,7 @@ class sweep:
         
     def startSdr(self):
         self.sdr = RtlSdr() #should probs add a try catch so this doesn't crash the code if sdr isn't plugged in
-        self.sdr.sample_rate = 2.8e6
+        self.sdr.sample_rate = 3.2e6
         self.sdr.center_freq = 100e6
         self.sdr.gain = 40
         self.sdr.frequency_correction = 0

@@ -52,7 +52,7 @@ chmod -R 777 strathRFM
 
 download exe or compile source code in the GUI folder
 
-# Live View RFSoC
+### Live View RFSoC
 
 For more immersive live spectrum analyser experience, the samba interface must be adapted to update as soon as possible. To do so the samba configuration file must be changed. This can be achieved trough the Jupyter Notebooks terminal within the JupyterLab as follows:
 * First lets open the samba configuration file:

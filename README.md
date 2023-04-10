@@ -1,43 +1,59 @@
 ![screenshot](logo.png?raw=true)
-# strath Radio Frequency Mapping
+## strath Radio Frequency Mapping
 
-Description:
+# Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.
 
-The currently supported devices are:
-
-rtl-sdr
-
-rfsoc 2x2
-
-rfsoc 4x2
-
-z111111111111111111111111111
+The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZCU111
 
 bla bla bla and bla
 
-## install
-Linux: 
+# install
+## Linux: 
 
 copy and panste use python command
 
-rfsoc:
+## rfsoc:
+Please also see [rfsoc_sam](https://github.com/strath-sdr/rfsoc_sam), [SigMF](https://github.com/sigmf/SigMF) and [GeoJSON](https://geojson.org) for detailed info of libraries used.
 
-open jupiter notebook terminal
+This project requires the sigmf and geojson libraries to be installed on the device. To do so, power on the RFSoC device, connect an ethernet cable and 
+finally connect to jupyterLab using a browser of your choice (192/168/3/1 password: xilinx). Once connected open a new terminal and run the following commands
+```
+pip install sigmf geojson
+```
+This will install the libraries. To install strathRFM the following commands can be pasted or typed into the console and run. This will download all the 
+necessary files onto the correct location that are required to be.
+```
+mkdir /home/xilinx/jupyter_notebooks/strathRFM
+mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
+cd /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrumWidgets.py
+cd /boot
+rm boot.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/Other/boot.py
+```
+Once complete, the **specCTRL.py** can be run from the terminal as follows:
+```
+python /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
+```
+This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation.
 
-pip3 install hhtps://git+strathRFM/strathRFM
 
 
-windows:
+
+## windows:
 
 download exe or compile source code in the GUI folder
 
-RTL-SDR:
+## RTL-SDR:
 
 To use the RTL-SDR in Python the following library is needed: pyrtlsdr. The library can be installed using the following pip command:
-
-**pip install pyrtlsdr**
-
+```
+pip install pyrtlsdr
+```
 Once downloaded the python package requires some dependices called librtlsdr, to work correctly. The package can be accessed from here https://github.com/librtlsdr/librtlsdr/releases. 
 We used **rtlsdr-bin-w64_dlldep.zip** package.
 

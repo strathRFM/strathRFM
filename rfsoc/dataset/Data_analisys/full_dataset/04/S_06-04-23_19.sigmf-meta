@@ -1,0 +1,31 @@
+{
+    "global": {
+        "core:author": "RFSoC",
+        "core:datatype": "rf32_le",
+        "core:geolocation": {
+            "coordinates": [
+                55.86126,
+                -4.24646
+            ],
+            "type": "Point"
+        },
+        "core:sample_rate": 4096000000.0,
+        "core:sha512": "65e12600c68bf428cbbb6250e4eb8ad1f09906cfeff19436d42fa11ac1968c6f2f3a62c40a7dc98ffe71ccd642817309461dec2ee0d13e0edbe7f5e1eaff0ffe",
+        "core:version": "1.1.0"
+    },
+    "captures": [
+        {
+            "core:datetime": "2023-04-06T19:45:27.645690Z",
+            "core:frequency": 1024.0,
+            "core:sample_start": 0
+        }
+    ],
+    "annotations": [
+        {
+            "core:freq_lower_edge": 1536000000.0,
+            "core:freq_upper_edge": 2048000000.0,
+            "core:sample_count": 16384,
+            "core:sample_start": 0
+        }
+    ]
+}

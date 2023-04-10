@@ -63,7 +63,7 @@ This will open the editor now you can navigate down and under globals section an
 ```
 oplocks = False
 ```
-To save the changes first prest 'ESC' and 'ZZ' Z twice. At this point it will exit vim and the RFSoC can be restarted using
+To save the changes first press 'ESC' button and 'ZZ' shift+z twice. At this point it will exit vim and the RFSoC can be restarted using
 ```
 sudo reboot now
 ```

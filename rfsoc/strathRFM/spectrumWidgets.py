@@ -4,10 +4,16 @@
 """
     Author: Robert Incze
     Date: 26/03/2023
-    Description: control class, that enables interactive editing of the config.pkl file in turn controlling the 
-                specCTRL and the spectrum analyser.
+    Description: Jupyter notebooks widgets, that enables interactive editing of the config.pkl file 
+                 in turn controlling the the spectrum analyser in an interactive manner. All of the
+                 possible parameters are settable within this jupyter notebooks widget class. It is
+                 also possible to inspect the spectrum with the specified settings. This class can
+                 be run both from the RFSoC Jupyter Lab and jupyter notebooks on a PC. To run on the
+                 PC samba is required to be enabled. Please refere to:
+                 https://github.com/strathRFM/strathRFM#live-view-rfsoc
+                 for samba set up and other instructions.
+                 
 """
-
 
 import pickle
 import matplotlib.pyplot as plt
@@ -21,8 +27,7 @@ import ipywidgets as widgets
 from ipywidgets import Button, HBox, VBox, Label, Layout
 from IPython.display import display
    
-    
-    
+# generate a new config file with default values.
 def create_config():
     config_file = {b'changed':True,
                   b'status': "config file generated.",
@@ -43,6 +48,7 @@ def create_config():
                   b'date_time':datetime.now()}
     res = pickleFile('config.pkl', config_file)
     
+# read a pickle file and return dict contents.
 def unpickleFile(file_path):
     idx = 0
     res = False
@@ -59,7 +65,9 @@ def unpickleFile(file_path):
             dict = {}
             res =  False
     return res, dict
-            
+      
+
+# Write dict to a pickle file.      
 def pickleFile(file_path, data):
     idx = 0
     res = False
@@ -74,8 +82,12 @@ def pickleFile(file_path, data):
             time.sleep(0.001)
             res = False
     return res
-    #comment
+    
 ###################################################################################################
+#                                       Spectrum Widgets Class                                    #
+###################################################################################################
+
+# class definition
 class spectrumWidgets:
     def __init__(self,_config_Path = "/home/xilinx/jupyter_notebooks/strathRFM/config.pkl", # path to the configuration file writable by GUI
                  _spec_Data_Stream_Path = "/home/xilinx/jupyter_notebooks/strathRFM/data.pkl" ):  # path of data file writable from this calss
@@ -94,7 +106,6 @@ class spectrumWidgets:
         self.rad = widgets.RadioButtons(
                         options=['continuous scan', 'idle'],
                         value=self.set_radio_val(), # Defaults to 'pineapple'
-                    #    layout={'width': 'max-content'}, # If the items' names are long
                         description='MODE:',
                         layout = self.full_scan.layout,
                         disabled=False
@@ -193,8 +204,10 @@ class spectrumWidgets:
             value = datetime.now().strftime("%H:%M"),
             layout=Layout(width='80px', height='38px')
         )
-    # definitions
         
+    # member methods definitions
+    
+    # assign current value for radio button.
     def set_radio_val(self):
         
         if(self.f[b'continuous_scan_enable']):
@@ -205,13 +218,12 @@ class spectrumWidgets:
             self.get_frame.disabled=False
             self.full_scan.disabled = True
             return 'idle'
-        
+            
+    # Applicaton layout.
     def AppLayout(self):
-        
+        # first frame in plot
         data = {b'data': [-130,0,-70,-100,-70,0,-130], b'lower_lim': -1, b'upper_lim': 2}
         self.live_plot(data)   
-            
-        
         # define system settings
         Tbuttons = HBox([self.boot,self.app_enable, self.get_frame],layout={'border': '1px solid black'})
         
@@ -252,7 +264,7 @@ class spectrumWidgets:
         # display
         display(HBox([self.L,self.out]))
         
-        
+    # method to update the settings, write config file.    
     def update_settings(self,b):
         self.f[b'changed'] = True
         self.f[b'centre_frequency'] = int(self.center_frequency.value)
@@ -272,7 +284,8 @@ class spectrumWidgets:
         if(res):
             self.push_settings.style.button_color = 'lightgreen'
             self.f[b'changed'] = False
-        
+    
+    # method to update the time on the device.
     def update_time(self,b):
         self.f[b'enable_time'] = True
         date_time = str(self.pickdate.value)+' '+str(self.picktime.value)
@@ -287,6 +300,7 @@ class spectrumWidgets:
             self.time.style.button_color = 'lightgreen'
             self.f[b'enable_time'] = False
     
+    # get new frame from the spectrum analyser and update plot
     def update_frame(self,b):
         self.f[b'single_frame_enable'] = True    
         self.f[b'changed'] = True  
@@ -300,7 +314,7 @@ class spectrumWidgets:
             self.live_plot(data) 
             self.f[b'changed'] = False  
     
-    
+    # change boot settings variable - instant
     def update_boot(self,b):
         val = self.f[b'start_on_boot']
         self.f[b'start_on_boot'] = not val
@@ -313,7 +327,7 @@ class spectrumWidgets:
         res = pickleFile(self.config_Path, self.f)
         if res:
             self.f[b'changed'] = False    
-        
+    # update plot.   
     get_ipython().run_line_magic('matplotlib', 'inline')
     def live_plot(self,data_dict, figsize=(8,7), title=''):
         with self.out:
@@ -332,7 +346,8 @@ class spectrumWidgets:
             print("Plot resolution (Hz): "+str((data_dict[b'upper_lim'] - data_dict[b'lower_lim'])/len(data_dict[b'data'])))
             print("time                : "+str(datetime.now()))
             print("RFSoC status        : "+str(self.f[b'status']))
-        
+   
+    # update app enable variable.
     def update_app_enable(self,b):
         val = self.f[b'app_enable']
         self.f[b'app_enable'] = not val
@@ -348,14 +363,16 @@ class spectrumWidgets:
             self.rad.disabled = True
             self.get_frame.disabled=True
         self.f[b'changed'] = True
-
+    
     def clear_setting_button(self,change):
         self.push_settings.style.button_color = 'lightblue'
-        
+      
+    # enable continuous scan to perform a full scan of the spectrum.
     def update_full_scan(self,change):
         self.f[b'changed'] = True   
         self.f[b'full_spectrum_scan'] = self.full_scan.value
-        
+    
+    # update the operation mode of the specCTRL.
     def update_mode(self,change):
         if(change['new'] == 'continuous scan'):
             self.f[b'continuous_scan_enable'] = True
@@ -396,7 +413,6 @@ class spectrumWidgets:
             self.time.disabled = False
             self.pickdate.disabled = False
             self.picktime.disabled = False
-            
             
         self.f[b'changed'] = True    
         self.clear_setting_button(change['new'])

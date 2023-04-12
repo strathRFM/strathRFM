@@ -558,8 +558,9 @@ class LiveViewTab(tk.Frame):
     # this method checks that the inputs are as expected. 
     # Returns True if no errors have been encountered.
     # The err variable is a string of all the errors encountered (include as popup window or print sometwhere).
-  
-    def covert_check_write(self, cf,fft,df,w,un,mn,fn,cr):
+ 
+    
+    def covert_check_write(self, cf,fft,df,w,un,mn,fn,cr,dvt):
         passed = True
         err = ""
         
@@ -641,29 +642,16 @@ class LiveViewTab(tk.Frame):
             # ONLY update if enable time active (activated by separate button)
             if(self.enable_time):
                 
-                # get widget time and date values stored in picktime and pickdate
                 # replace with your GUI variable
                 # local time use as formatted "YYYY-MM-DD HH:MM" No seconds
                 
                 # hand selected
-                date_time = str(self.pickdate.value)+' '+str(self.picktime.value)
                 
-                # from datetime import datetime
-                # import re, time
-                # system time
-                date_time = datetime.now() 
-                # get current time should be default value of date time selectors.
-                
-                date_time = date_time.strftime("%Y-%m-%d %H:%M")
-                
-                
-                dt = datetime.strptime(date_time, '%Y-%m-%d %H:%M')
+                # dvt = datetime.now().strftime("%Y-%m-%d %H:%M")
+                print(dvt, flush = True)
+                # if input is string in that format
+                dt = datetime.strptime(dvt, '%Y-%m-%d %H:%M')
                 self.date_time = dt
-                
-                # update widget / GUI values
-                self.device_time.value = str(dt)
-                self.pickdate.value = dt.date()
-                self.picktime.value = str(dt.strftime("%H:%M"))
             
         except:
             passed = False

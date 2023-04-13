@@ -3,8 +3,8 @@ import schedule
 import time
 import os
 
-folder = "TestWithDC"
-location = "G77 5JU"
+folder = "FALKIRK_3.2MHz"
+location = "FK2 9EB"
 
 sweepRun = sweep(25e6, 1750e6, 'max')
 sweepRun.capture()

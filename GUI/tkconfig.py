@@ -312,6 +312,7 @@ class tk_gui():
             self.full_spectrum_scan = False
         else:
             self.toggle_app.config(text='ON',relief="sunken")
+            self.app_enable = True
             
             
     def toggleBoot(self):
@@ -433,7 +434,7 @@ class tk_gui():
               
         
         
-        self.toggle_app = tk.Button(text="ON" if self.app_enable else "OFF",
+        self.toggle_app = tk.Button(text= "ON" if self.app_enable else "OFF",
                                     relief="sunken" if self.app_enable else "raised", width=10, command=self.toggleAPP)
         self.toggle_app.grid(row=8, 
                             column=1, 

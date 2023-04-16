@@ -41,7 +41,7 @@ python /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
 ```
 This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation. if permission issues are encountered change folder permissions of strathRFM using the following commands
 ```
-cd home/xilinx/jupyter_notebooks/
+cd /home/xilinx/jupyter_notebooks/
 chmod -R 777 strathRFM
 ```
 

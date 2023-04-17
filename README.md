@@ -100,11 +100,11 @@ This error can occur if the working path is not automatically specified in the s
 ```
 sys.path.append('/home/xilinx/jupyter_notebooks/strathRFM')
 ```
-alternatively vim can be used from the terminal 
+alternatively vim can be used from the terminal  (CHECK IF THIS CAN BE DONE)
 ```
 sudo vi /etc/sys.path
 ```
-and paste the path into the end of the file 
+and paste the path into the end of the file
 ```
 /home/xilinx/jupyter_notebooks/strathRFM
 ```

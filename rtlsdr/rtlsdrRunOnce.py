@@ -3,7 +3,7 @@ import schedule
 import time
 import os
 
-folder = "FALKIRK_3.2MHz"
+folder = "FALKIRK_3.2MHz_PC"
 location = "FK2 9EB"
 
 sweepRun = sweep(25e6, 1750e6, 'max')

@@ -39,11 +39,7 @@ Once complete, the **specCTRL.py** can be run from the terminal as follows:
 ```
 python /home/xilinx/jupyter_notebooks/strathRFM/specCTRL.py
 ```
-This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation. if permission issues are encountered change folder permissions of strathRFM using the following commands
-```
-cd home/xilinx/jupyter_notebooks/
-chmod -R 777 strathRFM
-```
+This will initialise the strathRFM data generation algorithm on the RFSoC in idle mode. By navigating to StrathRFM (jupyter_notebooks/strathRFM) and opening the **Notebook_CTRL.ipynb** file, the spectrum can be set up and tested or dataset generation can be initialiased. Alternatively, the same can be achieved using the included GUI for data analisys and data generation. 
 
 
 
@@ -89,3 +85,31 @@ Locate the file 'librtlsdr.py' and modify as shown below:
 ![image](https://user-images.githubusercontent.com/99476167/229480270-fe2a1ea1-52e6-4349-bbe3-5dd770f18e2a.png)
 
 Save the file and run a basic script with the RTL-SDR to check the driver was installed correctly.
+
+
+# Troubleshooting
+## RFSoC
+### Permissions
+if permission issues are encountered change folder permissions of strathRFM using the following commands
+```
+cd /home/xilinx/jupyter_notebooks/
+chmod -R 777 strathRFM
+```
+### Undefined modules
+This error can occur if the working path is not automatically specified in the system paths. python code:
+```
+sys.path.append('/home/xilinx/jupyter_notebooks/strathRFM')
+```
+alternatively vim can be used from the terminal  (CHECK IF THIS CAN BE DONE)
+```
+sudo vi /etc/sys.path
+```
+and paste the path into the end of the file
+```
+/home/xilinx/jupyter_notebooks/strathRFM
+```
+By pressing ZZ the file willl be saved and exited.
+
+
+
+

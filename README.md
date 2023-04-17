@@ -26,7 +26,7 @@ necessary files onto the correct location that are required to be.
 ```
 mkdir /home/xilinx/jupyter_notebooks/strathRFM
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
-cd /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
+cd /home/xilinx/jupyter_notebooks/strathRFM
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py

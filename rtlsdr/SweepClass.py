@@ -44,7 +44,7 @@ class sweep:
         self.nfrmhold = 20
         self.nfrmdump = 150 ## do not change - clears buffer
         self.nfft = 4096
-        self.dec_factor = 16
+        self.dec_factor = 32
         self.overlap = 0.5
 
         self.calculations()

@@ -7,7 +7,7 @@ import os
 # Load a dataset
 #filename = 'MearnsTest/S_12-03-23_16.sigmf-data' # extension is optional
 #folder = 'C:\\Users\\eilid\\mengsdr\\RFSoC\\Troon spectrum data'
-folder = 'C:\\Users\\eilid\\strathRFM\\rtlsdr\\TestWithDC'
+folder = 'C:\\Users\\eilid\\strathRFM\\rtlsdr\\Dec32'
 
 
 def getSigmfData(filename):
@@ -50,6 +50,10 @@ for file in sorted(os.listdir(folder)):
 ##        plt.plot(samples)
 ##        plt.show()
         freq_axis = np.linspace(spectrumDict[b'lower_lim'], spectrumDict[b'upper_lim'], num = spectrumDict[b'samples'])
-        plt.figure()
-        plt.plot(freq_axis, spectrumDict[b'data'], linewidth = 0.5)
+        fig = plt.figure()
+        fig, ax = plt.subplots()
+        ax.plot(freq_axis, spectrumDict[b'data'], linewidth = 0.5)
+        ax.set_xlabel('frequency (MHz)')
+        ax.set_ylabel('power ratio (dBm)')
+        ax.set_title("RTL-SDR Dataset - 13/04/23 3pm")
         plt.show()

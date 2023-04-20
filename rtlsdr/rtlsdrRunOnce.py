@@ -3,7 +3,7 @@ import schedule
 import time
 import os
 
-folder = "TestWithDC"
+folder = "Dec32"
 location = "G77 5JU"
 
 sweepRun = sweep(25e6, 1750e6, 'max')

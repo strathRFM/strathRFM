@@ -1,0 +1,30 @@
+{
+    "global": {
+        "core:author": "RTL-SDR",
+        "core:datatype": "rf64_le",
+        "core:geolocation": {
+            "coordinates": [
+                55.7701,
+                -4.31727
+            ],
+            "type": "Point"
+        },
+        "core:sha512": "5e83a7b018712bfda0010cbc236b9bf1f68d11ec4babd3c2b1495318969d1e66559d8431d26bda8008c17668efbe58604c4a1d3defe64e89597d7f1f2d709557",
+        "core:version": "1.1.0"
+    },
+    "captures": [
+        {
+            "core:datetime": "2023-04-12T19:40:27.542031Z",
+            "core:frequency": 2800000.0,
+            "core:sample_start": 0
+        }
+    ],
+    "annotations": [
+        {
+            "core:freq_lower_edge": 24.2,
+            "core:freq_upper_edge": 150.5875,
+            "core:sample_count": 10112,
+            "core:sample_start": 0
+        }
+    ]
+}

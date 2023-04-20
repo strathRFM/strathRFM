@@ -11,11 +11,12 @@ from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
 import scipy
 import pickle
+import re
 import numpy as np
 matplotlib.use("TkAgg")#if changing back end
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg #canvas and toolbar to use as objects
 from matplotlib import cm
-
+from datetime import datetime
 #will need to edit the toolbar later (or get rid of it)
 from matplotlib.figure import Figure
 #import SweepClass as sw
@@ -412,7 +413,27 @@ class LiveViewTab(tk.Frame):
         self.parent = parent
         self.config_path = r"\\192.168.3.1\xilinx\jupyter_notebooks\strathRFM\config.pkl"
         self.data_path = r"\\192.168.3.1\xilinx\jupyter_notebooks\strathRFM\data.pkl"
+        self.fs = 4096*1e6
         _,self.config = self.unpickleFile(self.config_path)
+        
+        self.status = self.config[b'status']                                    # string for specCTRL status
+        self.continuous_scan_enable = self.config[b'continuous_scan_enable']    # bool dataset generation
+        self.mins = self.config[b'mins']                                        # array of incremental number up to 59 [0,15,...,59]
+        self.single_frame_enable =  self.config[b'single_frame_enable']         # bool - get a frame
+        self.start_on_boot = self.config[b'start_on_boot']                      # bool - initialise on boot
+        self.full_spectrum_scan = self.config[b'full_spectrum_scan']            # bool - if continuous scan enable scan full spectrum
+        self.app_enable = self.config[b'app_enable']                            # bool - enable specCTRL loop
+        self.fft_size = self.config[b'fft_size']                                # int powers of 2
+        self.centre_frequency = self.config[b'centre_frequency']                # int defalt 1024 (MHz)
+        self.decimation_factor = self.config[b'decimation_factor']              # int powers of 2
+        self.units = self.config[b'units']                                      # str 'dBm' or 'dBFS' 
+        self.window = self.config[b'window']                                    # string window type check list
+        self.frame_number = self.config[b'frame_number']                        # int >= 1
+        self.coordinates = self.config[b'coordinates']                          # tuple (lat, long)
+        self.enable_time = self.config[b'enable_time']                          # bool to set time on device
+        self.date_time = self.config[b'date_time']                              # datetime format
+        
+        
         self.data = []
         self.stream_data()
         #to be completed
@@ -472,6 +493,7 @@ class LiveViewTab(tk.Frame):
                       b'date_time':self.date_time}                              # datetime format
         res = self.pickleFile(self.config_Path, config_file)
         
+        
     def stream_data(self):
         while(1):
         
@@ -493,8 +515,163 @@ class LiveViewTab(tk.Frame):
                 print("shit")
                 
             time.sleep(0.2)
+            
+    # [Settings] device name, fs,
+    # Assuming a layout 
+    #################################
+    #                       #       #
+    #                       #       #    
+    #                       #       #
+    #        Graph          #  CTL  #
+    #                       #       #
+    #                       #       #
+    #                       #       #
+    #################################
+    
+    # CTL: Logo?
+    # Buttons or Boolean switches: [Start on Boot, Application enable, Start/Stop stream (live view)]
+    # [Button: get frame] (get a single frame and display) 
+    # [Radio: IDLE, Continuous scan, ] [if continuous scan enable checkbox or switch for "Full spectrum scan"]
+    # 
+    # [Label('Spectrum Settings:')]
+    # [Label('Centre Frequency:']   [InputText()]   [Label('MHz')]
+    # [Label('FFT size:']           [Dropdown(options: ['64','128', '256', '512', '1024', '2048', '4096', '8192' ])]
+    # [Label('Decimation factor:']  [Dropdown(options: ['2', '4', '8', '16','32','64'])]
+    # [Label('Window Type:']        [Dropdown(options: ['rectangular','bartlett' ,'hamming', 'hanning', 'blackman'])]
+    # [Label('Units:']              [Dropdown(options: ['dBFS', 'dBm'])]
+    # [Label('Minutes:']            [InputText()] - convert string to an array
+    # [Label('Frames:']             [InputText()] - convert string to int  
+    # [Label('Coordinates:']        [InputText()] - convert string to tuple of ints 
+    # [Label('Push settings')]      [Button]
+    
+    # [Label('Local Time')]         [time date picker] [default value: datetime.now()]
+    # [Label('Device Time')]        [Text(device time).disabled] [Button(update time)]
+    
+    
+    # methods that are necessary:
+    
+    
+    
+    
+    
+    
+    # this method checks that the inputs are as expected. 
+    # Returns True if no errors have been encountered.
+    # The err variable is a string of all the errors encountered (include as popup window or print sometwhere).
+ 
+    
+    def covert_check_write(self, cf,fft,df,w,un,mn,fn,cr,dvt):
+        passed = True
+        err = ""
         
-
+        try:
+            self.centre_frequency = int(cf)
+        except:
+            passed = False
+            err += "ERROR: centre frequency,  is not an integer.\n"
+          
+        try:
+            self.fft_size = int(fft)
+        except:
+            passed = False
+            err += "ERROR: FFT size selection error.\n"
+            
+        try:
+            self.decimation_factor = int(df)
+        except:
+            passed = False
+            err += "ERROR: Decimation factor selection error.\n"
+            
+            
+        self.window = w
+        self.units = un
+        
+        try:
+            list_mins = re.sub("[\[\]]","",mn)
+            self.mins = [int(i) for i in list(list_mins.split(','))]
+            c = -1
+            for m in self.mins:
+                if (m > c):
+                    c = m
+                else:
+                    passed = False
+                    err += "ERROR: mintes must be incremental.\n"
+                    break
+                
+            for m in self.mins:
+                if (m < 0) | (m > 59):
+                    passed = False
+                    err += "ERROR: mintes must be between 0 and 59.\n"
+                    break
+            
+        except:
+            passed = False
+            err += "ERROR: mintes wrong format.\n"
+            
+        try:
+            self.frame_number = int(fn)
+        except:
+            passed = False
+            err += "ERROR: frame number, is not an integer.\n"
+            
+        try:
+            list_coor = re.sub("[())]","",cr).split(',')
+            self.coordinates = (float(list_coor[0]),float(list_coor[1]))
+            
+        except:
+            passed = False
+            err += "ERROR: Coordinates must be a tuple (e.g. \"(55.26, -4.65) \").\n"
+        
+        try:
+            u_lim = self.centre_frequency + ((self.fs/self.decimation_factor)/2)
+            l_lim = self.centre_frequency - ((self.fs/self.decimation_factor)/2)
+            if (u_lim > self.fs/2) | (l_lim < 0):
+                err += "ERROR: Nyquist stop band error: range must be within (0 and fs/2),\n >>> lower lim: "+str(l_lim)+" | upper lim: "+str(u_lim) + "\n"
+                print(err)
+                passed = False
+                
+            if self.frame_number < 1:
+                passed = False
+                err += "ERROR: frame number, must be higher or equeal to 1.\n" 
+            
+        except:
+            passed = False
+            err += "ERROR: other unknown error.\n"
+            
+        try:
+            # ONLY update if enable time active (activated by separate button)
+            if(self.enable_time):
+                
+                # replace with your GUI variable
+                # local time use as formatted "YYYY-MM-DD HH:MM" No seconds
+                
+                # hand selected
+                
+                # dvt = datetime.now().strftime("%Y-%m-%d %H:%M")
+                print(dvt, flush = True)
+                # if input is string in that format
+                dt = datetime.strptime(dvt, '%Y-%m-%d %H:%M')
+                self.date_time = dt
+            
+        except:
+            passed = False
+            err += "ERROR: Error has been encountered while updating time"
+    
+        if passed == False:
+            print(err)
+            # return err or make popup window (prefered)
+        else:
+            if self.create_config(True) == False:
+                passed = False
+                err += "ERROR: writing config file encountered an error.\n"
+                print(err)
+            else:
+                self.enable_time = False
+                
+        return passed, err
+    
+    
+    
 
 with tempfile.TemporaryDirectory() as dataset_dir:
     window = MainWindow(); #window instance

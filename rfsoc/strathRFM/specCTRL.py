@@ -1,8 +1,19 @@
 #!/usr/local/ python3
-
 # coding: utf-8
 
-#import "spectrum.py"
+"""
+Author: Robert A Incze, Jakub Olszewski
+Date: 14/03/2023
+Description: SpecCTRL class, controlling the spectrum class using the configuration file.
+            By editing the available dictionary elements within the config.pkl file, this 
+            class detects is changes have been made to the file and updates the parameters
+            of the spectrum analyser. It has methods for dataset generation and single
+            frame generation. While the "continuous scan" generates sigMF diles on the 
+            device, the get_frame function saves a data.pkl file holding the spectrum
+            power spectra in a dictionary. The get frame function can be polled and easily
+            implemented trough external software to generate dataset, live view or more.
+"""
+
 import pickle
 import time
 import numpy as np
@@ -10,6 +21,7 @@ import os
 from datetime import datetime
 from spectrum import spectrum
 
+# spectrum analyser controll class
 class SpecCTRL:
     def __init__(self,_config_Path = "/home/xilinx/jupyter_notebooks/strathRFM/config.pkl", # path to the configuration file writable by GUI
                  _spec_Data_Stream_Path = "/home/xilinx/jupyter_notebooks/strathRFM/data.pkl" ):  # path of data file writable from this calss
@@ -36,11 +48,12 @@ class SpecCTRL:
         self.coordinates = self.spec.get_coordinates()
         self.enable_time = False
         self.date_time = datetime.now()
-        
+    
+    # initialises the spectrum classes continuous scan method.    
     def continuous_scan(self):
-        # spectrum classes method to generate dataset
         self.spec.continuous_scan()
        
+    # read in pickle file.
     def unpickleFile(self, file_path):
         idx = 0
         res = False
@@ -57,7 +70,8 @@ class SpecCTRL:
                 dict = {}
                 res =  False
         return res, dict
-            
+    
+    # write pickle file.
     def pickleFile(self, file_path, data):
         idx = 0
         res = False
@@ -73,6 +87,7 @@ class SpecCTRL:
                 res = False
         return res
         
+    # writes the config file with the current settings.
     def create_config(self,_changed):
         config_file = {b'changed':_changed,
                       b'status': self.status,
@@ -93,16 +108,21 @@ class SpecCTRL:
                       b'date_time':self.date_time}
         res = self.pickleFile(self.config_Path, config_file)
     
+    # Inspect the configuration file and compare with local variables to detect
+    # if any changes are required to be made, if so, make the changes.
     def check_config(self):
         # this function loads in the config file and updates class variables
         res, config_file = self.unpickleFile(self.config_Path)
         
+        
+        # system time update as a separate process.
         if(config_file[b'enable_time']):
             self.set_time(str(config_file[b'date_time']))
             self.enable_time = False
             self.create_config(False)
             print("System time updated: " + str(datetime.now()))
         
+        # Spectrum and dataset generation settings
         if(config_file[b'changed'] == True):
             
             print("updating settings...   ")
@@ -170,14 +190,19 @@ class SpecCTRL:
                 self.coordinates = self.spec.get_coordinates()
                 print("-coordinates: " + str(self.coordinates))
             
+            # update device time on config file
+            self.date_time = datetime.now()
+            
             self.create_config(False)
             print("update settings complete.")
     
-    
+    # update device time method using linux command.
     def set_time(self,_time):
         os.system("date -s \""+_time+"\"");
         self.date_time = datetime.now()
     
+    # generate spectrum data using get frame if frame is set to 1
+    # otherwise use generate data for max hold.
     def spec_get_frame(self):
         self.single_frame_enable = False
         self.create_config(False)
@@ -195,7 +220,7 @@ class SpecCTRL:
                       b'data': data}
         self.pickleFile(self.spec_Data_Stream_Path,toFile)
                 
-        
+    # main control method that controls mode of operation.
     def start_CTRL(self):
         animation = "|/-\\" # animation to be removed if in boot mode.
         anim_idx = 0        # anim index init
@@ -203,8 +228,8 @@ class SpecCTRL:
             print("ceated config file.")
             self.create_config(True)
         print("spectrum CTRL initialiased.")
+        
         while(self.app_enable):
-            
             if(self.continuous_scan_enable):
                 self.status = "continuous scan - running..."
                 # background gather data for dataset
@@ -219,13 +244,14 @@ class SpecCTRL:
             if(self.status != "idle - running..."):
                 self.status = "idle - running..."
                 self.create_config(False)
-            print("  waiting for update "+ animation[anim_idx % len(animation)]+"               ",end="\r",flush = True)
+            print("  waiting "+ animation[anim_idx % len(animation)]+"               ",end="\r",flush = True)
             anim_idx += 1
             time.sleep(0.2)
             
         self.status = "SpecCTRL exited. Please run SpecCTRL to use strathRFM."
         self.create_config(False)
         print("exited.                             ")
-        
+ 
+# create class and run. 
 ctrl = SpecCTRL()
 ctrl.start_CTRL()

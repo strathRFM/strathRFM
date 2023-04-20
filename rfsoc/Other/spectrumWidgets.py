@@ -4,16 +4,10 @@
 """
     Author: Robert Incze
     Date: 26/03/2023
-    Description: Jupyter notebooks widgets, that enables interactive editing of the config.pkl file 
-                 in turn controlling the the spectrum analyser in an interactive manner. All of the
-                 possible parameters are settable within this jupyter notebooks widget class. It is
-                 also possible to inspect the spectrum with the specified settings. This class can
-                 be run both from the RFSoC Jupyter Lab and jupyter notebooks on a PC. To run on the
-                 PC samba is required to be enabled. Please refere to:
-                 https://github.com/strathRFM/strathRFM#live-view-rfsoc
-                 for samba set up and other instructions.
-                 
+    Description: control class, that enables interactive editing of the config.pkl file in turn controlling the 
+                specCTRL and the spectrum analyser.
 """
+
 
 import pickle
 import matplotlib.pyplot as plt
@@ -26,8 +20,10 @@ from IPython.display import clear_output
 import ipywidgets as widgets
 from ipywidgets import Button, HBox, VBox, Label, Layout
 from IPython.display import display
+import math
    
-# generate a new config file with default values.
+    
+    
 def create_config():
     config_file = {b'changed':True,
                   b'status': "config file generated.",
@@ -48,7 +44,6 @@ def create_config():
                   b'date_time':datetime.now()}
     res = pickleFile('config.pkl', config_file)
     
-# read a pickle file and return dict contents.
 def unpickleFile(file_path):
     idx = 0
     res = False
@@ -65,9 +60,7 @@ def unpickleFile(file_path):
             dict = {}
             res =  False
     return res, dict
-      
-
-# Write dict to a pickle file.      
+            
 def pickleFile(file_path, data):
     idx = 0
     res = False
@@ -82,12 +75,8 @@ def pickleFile(file_path, data):
             time.sleep(0.001)
             res = False
     return res
-    
+    #comment
 ###################################################################################################
-#                                       Spectrum Widgets Class                                    #
-###################################################################################################
-
-# class definition
 class spectrumWidgets:
     def __init__(self,_config_Path = "/home/xilinx/jupyter_notebooks/strathRFM/config.pkl", # path to the configuration file writable by GUI
                  _spec_Data_Stream_Path = "/home/xilinx/jupyter_notebooks/strathRFM/data.pkl" ):  # path of data file writable from this calss
@@ -106,6 +95,7 @@ class spectrumWidgets:
         self.rad = widgets.RadioButtons(
                         options=['continuous scan', 'idle'],
                         value=self.set_radio_val(), # Defaults to 'pineapple'
+                    #    layout={'width': 'max-content'}, # If the items' names are long
                         description='MODE:',
                         layout = self.full_scan.layout,
                         disabled=False
@@ -204,10 +194,8 @@ class spectrumWidgets:
             value = datetime.now().strftime("%H:%M"),
             layout=Layout(width='80px', height='38px')
         )
+    # definitions
         
-    # member methods definitions
-    
-    # assign current value for radio button.
     def set_radio_val(self):
         
         if(self.f[b'continuous_scan_enable']):
@@ -218,12 +206,13 @@ class spectrumWidgets:
             self.get_frame.disabled=False
             self.full_scan.disabled = True
             return 'idle'
-            
-    # Applicaton layout.
+        
     def AppLayout(self):
-        # first frame in plot
+        
         data = {b'data': [-130,0,-70,-100,-70,0,-130], b'lower_lim': -1, b'upper_lim': 2}
         self.live_plot(data)   
+            
+        
         # define system settings
         Tbuttons = HBox([self.boot,self.app_enable, self.get_frame],layout={'border': '1px solid black'})
         
@@ -264,57 +253,42 @@ class spectrumWidgets:
         # display
         display(HBox([self.L,self.out]))
         
-    # method to update the settings, write config file.    
+        
     def update_settings(self,b):
         self.f[b'changed'] = True
-        self.f[b'centre_frequency'] = int(self.center_frequency.value)
-        self.f[b'fft_size'] = int(self.fft_size.value)
-        self.f[b'decimation_factor'] = int(self.decimation_factor.value)
-        self.f[b'window'] = self.window.value
-        self.f[b'units'] = self.units.value
-        
-        list_mins = re.sub("[\[\]]","",self.mins.value)
-        self.f[b'mins'] = [int(i) for i in list(list_mins.split(','))]
-        self.f[b'frame_number'] = int(self.frames.value)
-        
-        list_coor = re.sub("[())]","",self.coordinates.value).split(',')
-        self.f[b'coordinates'] = (float(list_coor[0]),float(list_coor[1]))
         self.f[b'single_frame_enable'] = False
-        res = pickleFile(self.config_Path, self.f)
+        
+        res, err = self.covert_check_write()
+        
         if(res):
             self.push_settings.style.button_color = 'lightgreen'
             self.f[b'changed'] = False
-    
-    # method to update the time on the device.
+        else:
+            print(err)
+            self.f[b'changed'] = False
+        
     def update_time(self,b):
         self.f[b'enable_time'] = True
-        date_time = str(self.pickdate.value)+' '+str(self.picktime.value)
-        dt = datetime.strptime(date_time, '%Y-%m-%d %H:%M')
-        self.f[b'date_time'] = dt
-        self.device_time.value = str(dt)
-        self.pickdate.value = dt.date()
-        self.picktime.value = str(dt.strftime("%H:%M"))
-        self.f[b'single_frame_enable'] = False
-        res = pickleFile(self.config_Path, self.f)
+        
+        res, err = self.covert_check_write()
         if(res):
             self.time.style.button_color = 'lightgreen'
             self.f[b'enable_time'] = False
     
-    # get new frame from the spectrum analyser and update plot
     def update_frame(self,b):
         self.f[b'single_frame_enable'] = True    
         self.f[b'changed'] = True  
-        res = pickleFile(self.config_Path, self.f)
+        res, err = self.covert_check_write()
         if res:
             self.f[b'single_frame_enable'] = False   
-            
-        time.sleep(0.2*int(self.frames.value))
+        sleeptime = 0.3
+        if int(self.frames.value)> 1:
+            sleeptime += 0.4 + 0.1 *int(self.frames.value)
+        time.sleep(sleeptime)
         res, data = unpickleFile(self.data_Path)
         if(res):
             self.live_plot(data) 
             self.f[b'changed'] = False  
-    
-    # change boot settings variable - instant
     def update_boot(self,b):
         val = self.f[b'start_on_boot']
         self.f[b'start_on_boot'] = not val
@@ -324,10 +298,10 @@ class spectrumWidgets:
             self.boot.style.button_color = 'lightblue'
         
         self.f[b'single_frame_enable'] = False    
-        res = pickleFile(self.config_Path, self.f)
+        res, err = self.covert_check_write()
         if res:
             self.f[b'changed'] = False    
-    # update plot.   
+        
     get_ipython().run_line_magic('matplotlib', 'inline')
     def live_plot(self,data_dict, figsize=(8,7), title=''):
         with self.out:
@@ -346,8 +320,7 @@ class spectrumWidgets:
             print("Plot resolution (Hz): "+str((data_dict[b'upper_lim'] - data_dict[b'lower_lim'])/len(data_dict[b'data'])))
             print("time                : "+str(datetime.now()))
             print("RFSoC status        : "+str(self.f[b'status']))
-   
-    # update app enable variable.
+        
     def update_app_enable(self,b):
         val = self.f[b'app_enable']
         self.f[b'app_enable'] = not val
@@ -363,16 +336,14 @@ class spectrumWidgets:
             self.rad.disabled = True
             self.get_frame.disabled=True
         self.f[b'changed'] = True
-    
+
     def clear_setting_button(self,change):
         self.push_settings.style.button_color = 'lightblue'
-      
-    # enable continuous scan to perform a full scan of the spectrum.
+        
     def update_full_scan(self,change):
         self.f[b'changed'] = True   
         self.f[b'full_spectrum_scan'] = self.full_scan.value
-    
-    # update the operation mode of the specCTRL.
+        
     def update_mode(self,change):
         if(change['new'] == 'continuous scan'):
             self.f[b'continuous_scan_enable'] = True
@@ -414,6 +385,115 @@ class spectrumWidgets:
             self.pickdate.disabled = False
             self.picktime.disabled = False
             
+            
         self.f[b'changed'] = True    
         self.clear_setting_button(change['new'])
         
+    
+    def covert_check_write(self):
+        passed = True
+        err = ""
+        
+        try:
+            self.f[b'centre_frequency'] = int(self.center_frequency.value)
+        except:
+            passed = False
+            err += "ERROR: centre frequency,  is not an integer.\n"
+          
+        try:
+            self.f[b'fft_size'] = int(self.fft_size.value)
+        except:
+            passed = False
+            err += "ERROR: FFT size selection error.\n"
+            
+        try:
+            self.f[b'decimation_factor'] = int(self.decimation_factor.value)
+        except:
+            passed = False
+            err += "ERROR: Decimation factor selection error.\n"
+            
+            
+        self.f[b'window'] = self.window.value
+        self.f[b'units'] = self.units.value
+        
+        try:
+            
+            list_mins = re.sub("[\[\]]","",self.mins.value)
+            self.f[b'mins'] = [int(i) for i in list(list_mins.split(','))]
+            
+            c = -1
+            for m in self.f[b'mins']:
+                if (m > c):
+                    c = m
+                else:
+                    passed = False
+                    err += "ERROR: mintes must be incremental.\n"
+                    break
+                
+            for m in self.f[b'mins']:
+                if (m < 0) | (m > 59):
+                    passed = False
+                    err += "ERROR: mintes must be between 0 and 59.\n"
+                    break
+            
+        except:
+            passed = False
+            err += "ERROR: mintes wrong format.\n"
+            
+        try:
+            self.f[b'frame_number'] = int(self.frames.value)
+        except:
+            passed = False
+            err += "ERROR: frame number, is not an integer.\n"
+            
+        try:
+            list_coor = re.sub("[())]","",self.coordinates.value).split(',')
+            self.f[b'coordinates'] = (float(list_coor[0]),float(list_coor[1]))
+            
+        except:
+            passed = False
+            err += "ERROR: Coordinates must be a tuple (e.g. \"(55.26, -4.65) \").\n"
+        
+        try:
+            u_lim = self.centre_frequency + ((self.fs/self.decimation_factor)/2)
+            l_lim = self.centre_frequency - ((self.fs/self.decimation_factor)/2)
+            if (u_lim > self.fs/2) | (l_lim < 0):
+                err += "ERROR: Nyquist stop band error: range must be within (0 and fs/2),\n >>> lower lim: "+str(l_lim)+" | upper lim: "+str(u_lim) + "\n"
+                print(err)
+                passed = False
+                
+            if self.frame_number < 1:
+                passed = False
+                err += "ERROR: frame number, must be higher or equeal to 1.\n" 
+            
+        except:
+            passed = False
+            err += "ERROR: other unknown error.\n"
+            
+            
+        try:
+            # ONLY update if enable time active (activated by separate button)
+            if(self.enable_time):
+                date_time = str(self.pickdate.value)+' '+str(self.picktime.value)
+                dt = datetime.strptime(date_time, '%Y-%m-%d %H:%M')
+                self.f[b'date_time'] = dt
+                self.device_time.value = str(dt)
+                self.pickdate.value = dt.date()
+                self.picktime.value = str(dt.strftime("%H:%M"))
+                self.f[b'single_frame_enable'] = False
+        except:
+            passed = False
+            err += "ERROR: Error has been encountered while updating time"
+    
+        if passed == False:
+            print(err)
+            # return err or make popup window (prefered)
+        else:
+            if pickleFile(self.config_Path, self.f) == False:
+                passed = False
+                err += "ERROR: writing config file encountered an error.\n"
+                print(err)
+            else:
+                self.enable_time = False
+        return passed
+            

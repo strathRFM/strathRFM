@@ -4,12 +4,14 @@
 #import sys
 #sys.path.append('/usr/local/share/pynq-venv/lib/python3.8/site-packages')
 """
-Author: Robert A Incze, shullat
-Date:
-Description:
+Author: Robert A Incze, Jakub Olszewski
+Date: 11/04/2023
+Description: Spectrum class, is a class that controls the rfsoc_sam spectrum analyser without the
+            the need of a their GUI. which has been disabled. This class enables external control
+            of the overlay and extract spectrum data. The extracted data is saved to files using
+            the SigMF metadata format.
 """
 
-# In[1]:
 import matplotlib
 matplotlib.use("Agg")     # to disable matplotlib error from console.
 
@@ -17,7 +19,7 @@ import numpy as np
 from datetime import datetime
 import time 
 import os
-from pynq.overlays.base import BaseOverlay
+from pynq.overlays.base import BaseOverlay # redundant?
 from rfsoc_sam.overlay import Overlay
 import sigmf
 from sigmf import SigMFFile
@@ -240,7 +242,8 @@ class spectrum:
             self.centre_frequency_arr = [self.centre_frequency]
             self.lower_lim = self.rec.centre_frequency-(((self.fs)/self.rec.decimation_factor)/2)
             self.upper_lim = self.rec.centre_frequency+(((self.fs)/self.rec.decimation_factor)/2)
-        
+     
+    # SigMF metadata format write to file.
     def write_metadata(self):
         latlng = self.coordinates
         self.meta = SigMFFile(
@@ -265,7 +268,7 @@ class spectrum:
         self.meta.tofile(self.fileMeta)
         os.chmod(self.fileMeta, 0o777)
         
-        
+    # unpickle config.pkl file.   
     def unpickleFile(self):
         idx = 0
         res = False
@@ -283,6 +286,7 @@ class spectrum:
                 time.sleep(0.001)
         return res, cont_scan
     
+    # Dataset generating method.
     def continuous_scan(self):
         print("------------ CONTINUOUS ------------")
         print("|current spectrum settings:        |")

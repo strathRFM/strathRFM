@@ -8,7 +8,7 @@ Project Motivation: The Radio Frequency (RF) Spectrum has been under increasing 
 # Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZCU111
 # Acknowledgements:
-We would like to thank the University's [strathSDR](https://github.com/strath-sdr) team for continuous support duing the progress of the project, AMD for sponsoring the project by providing the RFSoC devices.
+We would like to thank the University's [strathSDR](https://github.com/strath-sdr) team for continuous support duing the progress of the project, [AMD xilinx](https://www.xilinx.com/) for sponsoring the project by providing the RFSoC devices.
 
 
 ## RTL-SDR:

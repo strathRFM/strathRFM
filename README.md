@@ -1,5 +1,5 @@
 ![screenshot](logo.png?raw=true)
-## strath Radio Frequency Mapping
+# strath Radio Frequency Mapping
 
 # Motivation:
 
@@ -16,7 +16,7 @@ The RFSoC device uses a spectrum analyser to capture data within the range of 0-
 ### JupyterLab - JupyterNotebooks
 The JupyerLab notebooks widget can be used directly on the board to set up and control the functioning of the device, or alternatively from the Jupyter Notebooks with "Samba" connection.
 <p align="center">
-  <img src="/rfsoc/Other/jupyter.png" width="50%" height="50%" />
+  <img src="./rfsoc/Other/jupyter.png" width="50%" height="50%" />
 </p>
 
 ## GUI
@@ -102,7 +102,19 @@ Locate the file 'librtlsdr.py' and modify as shown below:
 Save the file and run a basic script with the RTL-SDR to check the driver was installed correctly.
 
 ## Linux: 
-copy and paste use python command to run the gui.
+Please follow the instructions shown in the windows section to install required libraries on the device. Once installed, using Linux terminal navigate to the desired location and files can be downloaded using th "wget" command. Once the system is downloaded, the following command can be used.
+```
+cd <desired directory>
+
+wget https://github.com/strathRFM/strathRFM/raw/main/GUI/analysis.py
+wget https://github.com/strathRFM/strathRFM/raw/main/GUI/GUI_tabs.py
+wget https://github.com/strathRFM/strathRFM/raw/main/GUI/readData.py
+wget https://github.com/strathRFM/strathRFM/raw/main/GUI/SweepClass.py
+wget https://github.com/strathRFM/strathRFM/raw/main/GUI/tkconfig.py
+
+python <dsired directoy>/GUI.tabs.py
+```
+
 
 
 # Troubleshooting

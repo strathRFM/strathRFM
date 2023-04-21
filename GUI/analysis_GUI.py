@@ -21,7 +21,7 @@ class analysis():
                  _licenses_json = 'spectrumMapping.json',
                  _upper_lim = 2024*1e6,
                  _lower_lim = 0,
-                 _data_length = 157824,
+                 _data_length = 16384,
                 _line_fit_order = 12,
                 _threshold_offset = 5,
                 _samples_to_average = 24*7):
@@ -280,7 +280,7 @@ class analysis():
 
         ax = fig.add_subplot(111)
         ax.set_title('colorMap')
-        plt.imshow(data)
+        plt.imshow(data,extent = [self.f_axis[0], self.f_axis[-1], len(data[:,1])-1, 0], aspect="auto")
         #ax.set_aspect('equal')
 
         cax = fig.add_axes([0, 1, 0, 1])

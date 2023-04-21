@@ -7,6 +7,8 @@ import os
 # Load a dataset
 #filename = 'MearnsTest/S_12-03-23_16.sigmf-data' # extension is optional
 
+
+
 def getSigmfData(filename):
     signal = sigmffile.fromfile(filename)
     # Get some metadata and all annotations
@@ -37,3 +39,22 @@ def getSigmfData(filename):
         dict = { b'lower_lim': freq_start, b'upper_lim': freq_stop ,b'samples': annotation_length,b'data': samples}
         meta = { 'datetime' : dateTime, 'geolocation' : annotation_geolocation, 'device': annotation_device}
         return dict, meta
+
+
+# for file in sorted(os.listdir(folder)):
+#     if file.endswith(".sigmf-data"):
+#         spectrumDict = getSigmfData(folder+"\\"+file)
+#         freq_start = spectrumDict[b'lower_lim']
+#         freq_stop = spectrumDict[b'upper_lim']
+#         num = spectrumDict[b'samples']
+#         samples = np.array([spectrumDict[b'data']])
+# 
+# ##        freq_axis = np.linspace(freq_start, freq_stop, num)
+# ##        plt.figure()
+# ##        plt.plot(freq_axis, samples, linewidth = 0.5)
+# ##        plt.plot(samples)
+# ##        plt.show()
+#         freq_axis = np.linspace(spectrumDict[b'lower_lim'], spectrumDict[b'upper_lim'], num = spectrumDict[b'samples'])
+#         plt.figure()
+#         plt.plot(freq_axis, spectrumDict[b'data'], linewidth = 0.5)
+#         plt.show()

@@ -1,13 +1,4 @@
-#Modified 20/04/2023
-#Eilidh Hamilton, Ashleigh Reid, Martin Dimov
-
-#Based on script in:
-#B. Stewart, K. Barlee, D. Atkinson and L. Crockett
-#“Software Defined Radio Using MATLAB & Simulink and the RTL-SDR,”
-#in What is the RTL-SDR?, Glasgow, Strathclyde Academic Media, 2015
-
-
-#import libraries
+##from pylab import *
 import asyncio
 from rtlsdr import *
 import time as clock
@@ -29,33 +20,40 @@ import requests
 from ipstack import GeoLookup
 import os
 
-#defines class for sweep that can be used by other scripts
+
+#send_url = "http://api.ipstack.com/check?access_key=7b95fd77efbf101f0326be586602155f"
+#geo_req = requests.get(send_url)
+#geo_json = geo_req.json()
+#user_postition = [geo_json["latitude"], geo_json["longitude"]]
+
+#print(user_postition)
+#geo_lookup = GeoLookup("f3cbc704610c732ca77b700b12cf0d9d")
+#location = geo_lookup.get_own_location()
+#print(location)
+
+#g= geocoder.ipinfo('me')
+
+
+
 class sweep:
-    #initialising method - can define upper and lower frequency and processing method
     def __init__(self, lower, upper, proc_method):
-        #initialises sdr
         self.startSdr()
-        #sets upper and lower frequency
         self.start_freq = lower #25e6 min
         self.stop_freq = upper #1750e6 max
 
-        #sets dsp parameters
         self.nfrmhold = 20
         self.nfrmdump = 150 ## do not change - clears buffer
         self.nfft = 4096
         self.dec_factor = 16
         self.overlap = 0.5
 
-        #calculates other parameters
         self.calculations()
 
         self.proc = proc_method #can be 'avg' or 'max' - 'max' better   
-
-    #starts sdr    
+        
     def startSdr(self):
-        self.sdr = RtlSdr()
-        ##sets sdr parameters
-        self.sdr.sample_rate = 3.2e6
+        self.sdr = RtlSdr() #should probs add a try catch so this doesn't crash the code if sdr isn't plugged in
+        self.sdr.sample_rate = 2.8e6
         self.sdr.center_freq = 100e6
         self.sdr.gain = 40
         self.sdr.frequency_correction = 0
@@ -84,8 +82,6 @@ class sweep:
 
             #clear software buffer
             for i in range(100):
-                #error handling - loops until samples
-                #if sampling fails reboots sdr and waits 1 second
                 sampled = False
                 while sampled == False:
                     try:
@@ -99,12 +95,9 @@ class sweep:
                         clock.sleep(1)
 
 
-            print(self.tuner_freqs[ntune]) #display current value
+            print(self.tuner_freqs[ntune]) ##display current value
 
-            #samples x amounts of frames
             for frm in range(self.nfrmhold):
-                #error handling - loops until samples
-                #if sampling fails reboots sdr and waits 1 second
                 sampled = False
                 while sampled == False:
                     try:
@@ -116,39 +109,27 @@ class sweep:
                         self.startSdr()
                         self.sdr.center_freq = self.tuner_freqs[ntune]
                         clock.sleep(1)
-                        
-                #removes dc component
+                
                 samples = samples - np.mean(samples)
-
-                #takes fft of spectrum
+                
                 spectrum = np.abs(fft(samples, self.nfft))
-                #only takes middle of fft - has to reshuffle values to correct position
                 self.fft_middle[frm, :(int(self.overlap*self.nfft/2))] = spectrum[(int(self.overlap*self.nfft/2 + self.nfft/2)):]
                 self.fft_middle[frm, (int(self.overlap*self.nfft/2)):] = spectrum[1:(int(self.overlap*self.nfft/2))+1]
 
-            #finds mean or max of all frames
             if self.proc == 'mean':
                 self.fft_mean = np.mean(self.fft_middle, axis = 0)
             elif self.proc == 'max':
                 self.fft_mean = np.max(self.fft_middle, axis = 0)
-
-            #decimates frame to reduce noise
             self.fft_dec[ntune, :] = scipy.signal.decimate(self.fft_mean, self.dec_factor, 300, ftype='fir')
-
-        #flattens data from 2D array to 1D array
+    
         self.fft_all = self.fft_dec.flatten()
 
-        #removes discontinuities between bands
         for i in range(int(self.nfft*self.overlap/self.dec_factor), len(self.fft_all), int(self.nfft*self.overlap/self.dec_factor)):
             self.fft_all[i] = (self.fft_all[i-1] + self.fft_all[i+1])/2
-
-        #calculates time taken for sweep
+        
         elapsed = clock.time() - self.t
         print('Total Time =',elapsed)
-        #shuts down sdr
         self.sdr.close()
-
-        #used for plotting if required
         
         #h = hann(self.nfft)
         #X = fft(samples)
@@ -172,18 +153,15 @@ class sweep:
         #plt.show()
         
 
-    #writes to sigmf file
+
     def write(self, folder, location):
-        #gets date and time
         now = dt.datetime.now()
         file_time = now.strftime("%d-%m-%y_%H")
 
-        #if folder doesn't exist creates folder
         isExist = os.path.exists(folder)
         if not isExist:
            os.makedirs(folder)
-
-        #creates file names, opens data file and writes data
+        
         self.fileData = folder + '\\S_' + file_time + '.sigmf-data'
         self.f = open(self.fileData, "wb")
         self.fileMeta = folder + '\\S_' + file_time + '.sigmf-meta'
@@ -191,19 +169,15 @@ class sweep:
         self.data.astype(float)
         self.data.tofile(self.f)
 
-        #gets upper and lower frequency, datetime and length
         self.flo = [self.faxis[0]]
         self.fhi = [self.faxis[-1]]
         self.datetimekey = [dt.datetime.utcnow().isoformat()+'Z']
+
         self.length = [len(self.data)]
 
-        #closes data file
         self.f.close()
-
-        #gets location using info passed into method
         g = geocoder.arcgis(location)
-
-        #writes metadata to file
+        
         self.meta = SigMFFile(
             data_file = self.fileData, # extension is optional
             global_info = {
@@ -215,7 +189,6 @@ class sweep:
 
             }
         )
-        #writes additional metadata to file
         last = 0
         print(self.flo)
         for i in range(len(self.flo)): 
@@ -229,5 +202,4 @@ class sweep:
                 SigMFFile.FHI_KEY: self.fhi[i],
             })
             last += self.length[i]
-        #saves metadata file
         self.meta.tofile(self.fileMeta)

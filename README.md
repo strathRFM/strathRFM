@@ -154,9 +154,17 @@ By pressing ZZ the file willl be saved and exited.
 ## Authors:
 
 [Ashleigh](https://github.com/ashleighreid)
+
+
 [Eilidh](https://github.com/eilidhrh)
+
+
 [Jakub](https://github.com/Shullat)
+
+
 [Robert](https://github.com/Inczert)
+
+
 [Martin](https://github.com/martin-dimov)
 
 

@@ -46,16 +46,16 @@ mkdir /home/xilinx/jupyter_notebooks/strathRFM
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/spectrum_data
 mkdir /home/xilinx/jupyter_notebooks/strathRFM/other
 cd /home/xilinx/jupyter_notebooks/strathRFM
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/Notebook_CTRL.ipynb
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrum.py
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/specCTRL.py
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/spectrumWidgets.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/Notebook_CTRL.ipynb
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/spectrum.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/specCTRL.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/spectrumWidgets.py
 cd other
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/other/logo.png
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/other/jupyter.png
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other/logo.png
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other/jupyter.png
 cd /boot
 rm boot.py
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/strathRFM/other//boot.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other//boot.py
 ```
 Once complete, the **specCTRL.py** can be run from the terminal as follows:
 ```

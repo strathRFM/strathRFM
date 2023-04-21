@@ -16,7 +16,7 @@ The RFSoC device uses a spectrum analyser to capture data within the range of 0-
 ### JupyterLab - JupyterNotebooks
 The JupyerLab notebooks widget can be used directly on the board to set up and control the functioning of the device, or alternatively from the Jupyter Notebooks with "Samba" connection.
 <p align="center">
-  <img src="./rfsoc/Other/jupyter.png.jpg" width="50%" height="50%" />
+  <img src="./rfsoc/Other/jupyter.png" width="50%" height="50%" />
 </p>
 
 ## GUI

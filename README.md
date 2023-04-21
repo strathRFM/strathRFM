@@ -14,6 +14,10 @@ The RTL-SDR connects with a host PC via USB 2.0, When the device is connected is
 ## RFSoC
 The RFSoC device uses a spectrum analyser to capture data within the range of 0-2 GHz. The analyser interacts with a spectrum class which allows for a continuous data scan to take place. The spectrum control class controls the spectrum class using the configuration file that can be accessed and edited from various locations. The boot process enables the RFSoC to boot up and initialise the algorithm in the required mode without the need of external input.
 ### JupyterLab - JupyterNotebooks
+The JupyerLab notebooks widget can be used directly on the board to set up and control the functioning of the device, or alternatively from the Jupyter Notebooks with "Samba" connection.
+<p align="center">
+  <img src="./rfsoc/Other/jupyter.png.jpg" width="50%" height="50%" />
+</p>
 
 ## GUI
 The Graphical User Interface (GUI) is used to visualise data from the RTL-SDR and RFSoC automatically, where users can select data to be analysed and mapped using the spectrum view and map view functionality. Devices can be set up to generate  dataset using the GUI. While the spectrum can be inspected in real time using the RFSoC live view functionality.

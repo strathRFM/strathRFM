@@ -1,5 +1,5 @@
 ![screenshot](logo.png?raw=true)
-## strath Radio Frequency Mapping
+# strath Radio Frequency Mapping
 
 # Motivation:
 

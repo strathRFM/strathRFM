@@ -7,6 +7,9 @@ Project Motivation: The Radio Frequency (RF) Spectrum has been under increasing 
 
 # Description:
 strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZCU111
+# Acknowledgements:
+We would like to thank the University's [strathSDR](https://github.com/strath-sdr) team for continuous support duing the progress of the project, [AMD xilinx](https://www.xilinx.com/) for sponsoring the project by providing the RFSoC devices.
+
 
 ## RTL-SDR:
 The RTL-SDR connects with a host PC via USB 2.0, When the device is connected is uses Sweep class in the PC to capture spectrum data hourly. The data is then passed to the GUI to be viewed and analysed.
@@ -143,6 +146,8 @@ and paste the path into the end of the file
 /home/xilinx/jupyter_notebooks/strathRFM
 ```
 By pressing ZZ the file willl be saved and exited.
+
+
 
 
 

@@ -1,17 +1,28 @@
 ![screenshot](logo.png?raw=true)
 ## strath Radio Frequency Mapping
 
+# Motivation:
+
+Project Motivation: The Radio Frequency (RF) Spectrum has been under increasing pressure in recent years due to a demand for data capacity and bandwidth increasing. The spectrum is a limited resource due to the fact a given space in the spectrum can only be utilised by  one user at a time to prevent inter-channel interference (ICI). Spectrum allocation across the world is primary organised by a countries government, where portions of the spectrum are allocated for specific uses e.g. military or portions can be auctioned. This process allows no ICI to take place but means the spectrum allocation is inefficient due to the users not always utilising the allocated spectrum. This means the allocated space has become static.
+
 # Description:
-strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.
+strathRFM is a system that can generate datasets of the RF spectrum and map it using the easy to use GUI.The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZCU111
 
-The currently supported devices are: rtl-sdr, rfsoc 2x2, rfsoc 4x2, ZCU111
+## RTL-SDR:
+The RTL-SDR connects with a host PC via USB 2.0, When the device is connected is uses Sweep class in the PC to capture spectrum data hourly. The data is then passed to the GUI to be viewed and analysed.
 
-bla bla bla and bla
+## RFSoC
+The RFSoC device uses a spectrum analyser to capture data within the range of 0-2 GHz. The analyser interacts with a spectrum class which allows for a continuous data scan to take place. The spectrum control class controls the spectrum class using the configuration file that can be accessed and edited from various locations. The boot process enables the RFSoC to boot up and initialise the algorithm in the required mode without the need of external input.
+### JupyterLab - JupyterNotebooks
+
+## GUI
+The Graphical User Interface (GUI) is used to visualise data from the RTL-SDR and RFSoC automatically, where users can select data to be analysed and mapped using the spectrum view and map view functionality. Devices can be set up to generate  dataset using the GUI. While the spectrum can be inspected in real time using the RFSoC live view functionality.
+
+
+
 
 # install
-## Linux: 
 
-copy and panste use python command
 
 ## rfsoc:
 Please also see [rfsoc_sam](https://github.com/strath-sdr/rfsoc_sam), [SigMF](https://github.com/sigmf/SigMF) and [GeoJSON](https://geojson.org) for detailed info of libraries used.
@@ -85,6 +96,9 @@ Locate the file 'librtlsdr.py' and modify as shown below:
 ![image](https://user-images.githubusercontent.com/99476167/229480270-fe2a1ea1-52e6-4349-bbe3-5dd770f18e2a.png)
 
 Save the file and run a basic script with the RTL-SDR to check the driver was installed correctly.
+
+## Linux: 
+copy and paste use python command to run the gui.
 
 
 # Troubleshooting

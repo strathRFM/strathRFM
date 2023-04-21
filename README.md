@@ -11,7 +11,7 @@ strathRFM is a system that can generate datasets of the RF spectrum and map it u
 We would like to thank the University's [strathSDR](https://github.com/strath-sdr) team for continuous support duing the progress of the project, [AMD xilinx](https://www.xilinx.com/) for sponsoring the project by providing the RFSoC devices.
 
 # Dataset:
-Datasets have been generated of the spectrum in two different locations, Troon and Dennistoun (Scotland), for a time span of 1000 hrs each (6 weeks), they can be downloaded for futher study.
+Two Datasets have been generated usind the RFSoC device. The spectrum has been recorded in two different locations, Troon and Dennistoun (Scotland), for a time span of 1000 hrs each (6 weeks). Additional test sample data can be also downloaded for the RTL-SDR, all data they can be downloaded for futher study or compariosn. Please visit [sigMF](https://github.com/sigmf/SigMF) for file format documentation and permissions.
 
 ## RTL-SDR:
 The RTL-SDR connects with a host PC via USB 2.0, When the device is connected is uses Sweep class in the PC to capture spectrum data hourly. The data is then passed to the GUI to be viewed and analysed.

@@ -55,7 +55,7 @@ wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other/logo.png
 wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other/jupyter.png
 cd /boot
 rm boot.py
-wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other//boot.py
+wget https://github.com/strathRFM/strathRFM/raw/main/rfsoc/other/boot.py
 ```
 Once complete, the **specCTRL.py** can be run from the terminal as follows:
 ```
